@@ -12,10 +12,6 @@ node .
 
 ## docker
 
-First of all, you need to build a container:
+Build and run container with code:
 
-`docker build -t user-vhost-generator`
-
-Next, install project dependencies:
-
-`docker run -v ${PWD}:/usr/src/app -t user-vhost-generator yarn install`
+`docker-compose -p uvg up --build`
