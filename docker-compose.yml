@@ -1,9 +1,10 @@
 version: "3"
-
 services:
-
-  app:
+  generate:
     build: .
+    env:
+      - OUTPUT_FILE='./user_vhost_list.conf'
+      - SECRET_FILE='./secret'
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules

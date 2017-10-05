@@ -1,17 +1,54 @@
 #!/usr/bin/env node
 
-/*
- * ldapsearch -D cn=root,ou=ldap,o=redbrick -xLLL \
- * -y /etc/ldap.secret \
- *  objectClass uid gidNumber > entry.ldif
- */
-
 const fs = require('fs-extra');
 const { isUndefined, isEmpty } = require('lodash');
-const ldif = require('ldif');
+const ldap = require('ldapjs');
 
-const ldap = ldif.parseFile('./entry.ldif');
-const users = [];
+const client = ldap.createClient({
+  url: `ldap://${process.env.LDAP_SEVRER || 'localhost'}`,
+});
+
+const opts = {
+  attributes: ['objectClass', 'uid', 'gidNumber'],
+};
+
+(async () => {
+  try {
+    const secret = await fs.readFile(`${process.env.SECRET_FILE || './secret'}`, 'utf-8');
+    client.bind('cn=root', secret, err => {
+      if (err) throw err;
+    });
+    const users = await client.search(
+      'cn=root,ou=ldap,o=redbrick',
+      opts,
+      (err, res) =>
+        new Promise((resolve, reject) => {
+          if (err) reject(err);
+          const results = [];
+
+          res.on('searchEntry', ({ object }) => {
+            results.push(object);
+          });
+
+          res.on('error', ({ message }) => {
+            console.error(`error: ${message}`);
+          });
+
+          res.on('end', ({ status }) => {
+            console.log(`status: ${status}`);
+            resolve(results);
+          });
+        }),
+    );
+    await fs.outputFile(
+      `${process.env.OUTPUT_FILE || './user_vhost_list.conf'}`,
+      convertUsers(users),
+    );
+  } catch (err) {
+    console.errror(err);
+    process.exit(1);
+  }
+})();
 
 function getGroup({ gid }) {
   switch (gid) {
@@ -42,8 +79,10 @@ function getGroup({ gid }) {
   }
 }
 
-(() => {
-  ldap.entries.forEach(({ attributes }) => {
+function convertUsers({ entries }) {
+  const users = [];
+  let vhosts = '';
+  entries.forEach(({ attributes }) => {
     if (!isUndefined(attributes)) {
       const user = {};
       let reserved = false;
@@ -73,12 +112,10 @@ function getGroup({ gid }) {
   users.forEach(user => {
     if (isEmpty(user.group)) user.group = getGroup(user);
     if (!isEmpty(user.username) && !isEmpty(user.group)) {
-      fs.appendFile(
-        'user_vhost_list.conf',
-        `use VHost /storage/webtree/${user.username.charAt(
-          0,
-        )}/${user.username} ${user.username} ${user.group} ${user.username}\n`,
-      );
+      vhosts += `use VHost /storage/webtree/${user.username.charAt(
+        0,
+      )}/${user.username} ${user.username} ${user.group} ${user.username}\n`;
     }
   });
-})();
+  return vhosts;
+}
