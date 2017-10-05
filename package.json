@@ -2,7 +2,7 @@
   "dependencies": {
     "event-page": "^1.0.8",
     "fs-extra": "^4.0.1",
-    "ldif": "^0.5.1",
+    "ldapjs": "^1.0.1",
     "lodash": "^4.17.4"
   },
   "name": "user-vhost-generator",
