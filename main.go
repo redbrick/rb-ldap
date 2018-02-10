@@ -12,13 +12,13 @@ import (
 	ldap "gopkg.in/ldap.v2"
 )
 
-type user struct {
+type rbUser struct {
 	Name    string
 	Initial rune
 	Group   string
 }
 
-func (u *user) Vhost() string {
+func (u *rbUser) Vhost() string {
 	return fmt.Sprintf("use VHost /storage/webtree/%s/%s %s %s %s", string(u.Initial), u.Name, u.Name, u.Group, u.Name)
 }
 
@@ -26,6 +26,7 @@ func main() {
 	binduser := flag.String("user", "cn=root,ou=ldap,o=redbrick", "ldap user")
 	host := flag.String("host", "ldap.internal", "ldap host")
 	port := flag.Int("port", 389, "ldap port")
+	path := flag.String("path", "./user_vhost_list.conf", "file to output too")
 	flag.Parse()
 	args := flag.Args()
 	if len(args) == 0 {
@@ -33,15 +34,29 @@ func main() {
 	}
 
 	secret, err := ioutil.ReadFile(args[0])
-	check(err)
+	if err != nil {
+		log.Fatal(err)
+	}
 	bindpassword := strings.Join(strings.Fields(string(secret)), " ")
+	n, err := Generate(*binduser, bindpassword, *host, *port, *path)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("wrote %d bytes ./user_vhost_list.conf\n", n)
+}
 
-	l, err := ldap.Dial("tcp", fmt.Sprintf("%s:%d", *host, *port))
-	check(err)
+// Generate user vhost conf from ldap
+func Generate(user string, pass string, host string, port int, output string) (int, error) {
+	l, err := ldap.Dial("tcp", fmt.Sprintf("%s:%d", host, port))
+	if err != nil {
+		return 0, err
+	}
 	defer l.Close()
 
-	err = l.Bind(*binduser, bindpassword)
-	check(err)
+	err = l.Bind(user, pass)
+	if err != nil {
+		return 0, err
+	}
 
 	searchRequest := ldap.NewSearchRequest(
 		"ou=accounts,o=redbrick",
@@ -51,7 +66,9 @@ func main() {
 		nil,
 	)
 	sr, err := l.Search(searchRequest)
-	check(err)
+	if err != nil {
+		return 0, err
+	}
 	var vhosts []string
 	for _, entry := range sr.Entries {
 		uid := entry.GetAttributeValue("uid")
@@ -60,28 +77,26 @@ func main() {
 			group = gidToGroup(entry)
 		}
 		if group != "" && group != "redbrick" && group != "reserved" {
-			u := user{uid, []rune(uid)[0], group}
+			u := rbUser{uid, []rune(uid)[0], group}
 			vhosts = append(vhosts, u.Vhost())
 		}
 	}
-	f, err := os.Create("./user_vhost_list.conf")
-	check(err)
+	f, err := os.Create(output)
+	if err != nil {
+		return 0, err
+	}
 	defer f.Close()
 	n, err := f.WriteString(strings.Join(vhosts, "\n"))
-	fmt.Printf("wrote %d bytes ./user_vhost_list.conf\n", n)
 	f.Sync()
-}
-
-func check(e error) {
-	if e != nil {
-		log.Fatal(e)
-	}
+	return n, err
 }
 
 func gidToGroup(entry *ldap.Entry) string {
 	gid := entry.GetAttributeValue("gidNumber")
 	gidNum, err := strconv.Atoi(gid)
-	check(err)
+	if err != nil {
+		return ""
+	}
 	switch gidNum {
 	case 100:
 		return "committe"
