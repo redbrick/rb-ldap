@@ -7,13 +7,10 @@
  */
 
 const fs = require('fs-extra');
-const { isUndefined, isEmpty } = require('lodash');
+const { isEmpty, isUndefined } = require('lodash');
 const ldif = require('ldif');
 
-const ldap = ldif.parseFile('./entry.ldif');
-const users = [];
-
-function getGroup({ gid }) {
+function getGroup(gid) {
   switch (gid) {
     case 100:
       return 'committe';
@@ -42,43 +39,31 @@ function getGroup({ gid }) {
   }
 }
 
-(() => {
-  ldap.entries.forEach(({ attributes }) => {
-    if (!isUndefined(attributes)) {
-      const user = {};
-      let reserved = false;
-      attributes.forEach(({ attribute, value }) => {
-        if (attribute.attribute === 'uid') {
-          user.username = value.value;
-        }
-        if (attribute.attribute === 'gidNumber') {
-          user.gid = value.value;
-        }
-        if (
-          value.value === 'club' ||
-          value.value === 'committe' ||
-          value.value === 'society' ||
-          value.value === 'associate' ||
-          value.value === 'member'
-        ) {
-          user.group = value.value;
-        } else if (value.value === 'redbrick' || value.value === 'reserved') {
-          reserved = true;
-        }
-      });
-      if (!isEmpty(user) && !reserved) users.push(user);
-    }
-  });
+const vhost = user =>
+  `use VHost /storage/webtree/${user.username.charAt(0)}/${user.username} ${user.username} ${
+    user.group
+  } ${user.username}\n`;
 
-  users.forEach(user => {
-    if (isEmpty(user.group)) user.group = getGroup(user);
-    if (!isEmpty(user.username) && !isEmpty(user.group)) {
-      fs.appendFile(
-        'user_vhost_list.conf',
-        `use VHost /storage/webtree/${user.username.charAt(
-          0,
-        )}/${user.username} ${user.username} ${user.group} ${user.username}\n`,
-      );
-    }
-  });
-})();
+const ldap = ldif.parseFile('./entry.ldif');
+fs.appendFile(
+  'user_vhost_list.conf',
+  ldap.entries
+    .map(entry => {
+      const { attributes: { objectClass, uid, gidNumber } } = entry.toObject();
+      const user = { username: uid };
+      if (
+        objectClass === 'club' ||
+        objectClass === 'committe' ||
+        objectClass === 'society' ||
+        objectClass === 'associate' ||
+        objectClass === 'member'
+      ) {
+        user.group = objectClass;
+      }
+      if (isEmpty(user.group)) user.group = getGroup(gidNumber);
+      if (!isEmpty(user.username) && !isEmpty(user.group)) return vhost(user);
+      return undefined;
+    })
+    .filter(u => !isUndefined(u))
+    .join('\n'),
+);
