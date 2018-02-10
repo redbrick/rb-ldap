@@ -1,17 +1,19 @@
-# user-vhost-generator
+# userVhost
 
-Script to convert an ldif in to conf for uservhost
+Script to query ldap for user info to generate apache template conf for user
+vhosts.
 
-## To run
+## Installation
 
-``` console
-yarn
-ldapsearch -D cn=root,ou=ldap,o=redbrick -xLLL -y /etc/ldap.secret objectClass uid gidNumber > entry.ldif
-node .
+```console
+go get github.com/redbrick/userVhost
 ```
 
-## docker
+## Run
 
-Build and run container with code:
+```console
+userVhost ./ldap.secret
+```
 
-`docker-compose -p uvg up --build`
+The conf will be output to the current dir. Run `userVhost -h` to get a list of
+flags
