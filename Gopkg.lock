@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  branch = "master"
+  name = "github.com/urfave/cli"
+  packages = ["."]
+  revision = "a1c7408de3f632d86eee604a3bb755f1ffb68226"
+
+[[projects]]
   name = "gopkg.in/asn1-ber.v1"
   packages = ["."]
   revision = "379148ca0225df7a432012b8df0355c2a2063ac0"
@@ -16,6 +22,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "1acb72ab23ba0cb27de274a0c779f3a36456f78b0692e179db90901c842df0fd"
+  inputs-digest = "223c959929ebd1fe2b6728ee05b317c9900743171fcce4f2bb5e8ee3a9889ab6"
   solver-name = "gps-cdcl"
   solver-version = 1
