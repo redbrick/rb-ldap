@@ -20,7 +20,11 @@ func Search(ctx *cli.Context) error {
 		if err != nil {
 			return err
 		}
-		user, searchErr := rbuser.SearchDCU(dcu, filterAnd(filter("displayName", name), filter("cn", ctx.String("user")), id))
+		user, searchErr := rbuser.SearchDCU(dcu, filterAnd(
+			filter("displayName", name),
+			filter("cn", ctx.String("user")),
+			id),
+		)
 		if searchErr != nil {
 			return searchErr
 		}
@@ -34,7 +38,13 @@ func Search(ctx *cli.Context) error {
 	if ctx.Bool("noob") {
 		noob = "(newbie=TRUE)"
 	}
-	user, searchErr := rbuser.SearchRB(rb, filterAnd(filter("cn", name), filterOr(filter("uid", ctx.String("user")), filter("gecos", ctx.String("user"))), id, mail, noob))
+	user, searchErr := rbuser.SearchRB(rb, filterAnd(
+		filter("cn", name),
+		filterOr(
+			filter("uid", ctx.String("user")),
+			filter("gecos", ctx.String("user")),
+		), id, mail, noob),
+	)
 	if searchErr != nil {
 		return searchErr
 	}

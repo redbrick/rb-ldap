@@ -7,7 +7,7 @@ import (
 )
 
 // Generate user vhost conf from ldap
-func Generate(l *ldap.Conn, output string) ([]string, error) {
+func Generate(l *ldap.Conn) ([]string, error) {
 	var vhosts []string
 	searchRequest := ldap.NewSearchRequest(
 		"ou=accounts,o=redbrick",

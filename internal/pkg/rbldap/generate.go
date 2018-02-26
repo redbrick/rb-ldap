@@ -32,7 +32,6 @@ func Generate(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	err = file.Sync()
 	fmt.Printf("wrote %d bytes %s\n", n, ctx.String("conf"))
-	return err
+	return file.Sync()
 }

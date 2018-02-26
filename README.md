@@ -1,5 +1,7 @@
 # rb-ldap
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/redbrick/rbldap)](https://goreportcard.com/report/github.com/redbrick/rbldap)
+
 Script to interact with Redbrick LDAP.
 
 * query ldap for user info to generate apache template conf for user vhosts.
