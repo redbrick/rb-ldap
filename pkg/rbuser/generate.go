@@ -1,15 +1,14 @@
 package rbuser
 
 import (
-	"os"
 	"strconv"
-	"strings"
 
 	ldap "gopkg.in/ldap.v2"
 )
 
 // Generate user vhost conf from ldap
-func Generate(l *ldap.Conn, output string) (int, error) {
+func Generate(l *ldap.Conn, output string) ([]string, error) {
+	var vhosts []string
 	searchRequest := ldap.NewSearchRequest(
 		"ou=accounts,o=redbrick",
 		ldap.ScopeSingleLevel, ldap.NeverDerefAliases,
@@ -19,15 +18,14 @@ func Generate(l *ldap.Conn, output string) (int, error) {
 	)
 	sr, err := l.Search(searchRequest)
 	if err != nil {
-		return 0, err
+		return vhosts, err
 	}
-	var vhosts []string
 	for _, entry := range sr.Entries {
 		group := entry.GetAttributeValue("objectClass")
 		if group == "" {
 			gidNum, conversionErr := strconv.Atoi(entry.GetAttributeValue("gidNumber"))
 			if conversionErr != nil {
-				return 0, conversionErr
+				return vhosts, conversionErr
 			}
 			group = gidToGroup(gidNum)
 		}
@@ -36,17 +34,7 @@ func Generate(l *ldap.Conn, output string) (int, error) {
 			vhosts = append(vhosts, u.Vhost())
 		}
 	}
-	f, err := os.Create(output)
-	if err != nil {
-		return 0, err
-	}
-	defer f.Close()
-	n, err := f.WriteString(strings.Join(vhosts, "\n"))
-	if err != nil {
-		return n, err
-	}
-	err = f.Sync()
-	return n, err
+	return vhosts, nil
 }
 
 func gidToGroup(gid int) string {

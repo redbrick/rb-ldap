@@ -2,6 +2,8 @@ package rbldap
 
 import (
 	"fmt"
+	"os"
+	"strings"
 
 	"github.com/redbrick/rbldap/pkg/rbuser"
 	"github.com/urfave/cli"
@@ -13,8 +15,24 @@ func Generate(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	path := ctx.String("conf")
-	n, genErr := rbuser.Generate(l, path)
-	fmt.Printf("wrote %d bytes %s\n", n, path)
-	return genErr
+	vhosts, err := rbuser.Generate(l)
+	if err != nil {
+		return err
+	}
+	if ctx.Bool("dry-run") {
+		fmt.Print(strings.Join(vhosts, "\n"))
+		return nil
+	}
+	file, err := os.Create(ctx.String("conf"))
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	n, err := file.WriteString(strings.Join(vhosts, "\n"))
+	if err != nil {
+		return err
+	}
+	err = file.Sync()
+	fmt.Printf("wrote %d bytes %s\n", n, ctx.String("conf"))
+	return err
 }

@@ -64,6 +64,11 @@ func main() {
 			Usage:    "password for the DCU ldap server",
 			FilePath: "/etc/dcu_ldap.secret",
 		},
+
+		cli.BoolFlag{
+			Name:  "dry-run",
+			Usage: "output too console rather then file",
+		},
 	}
 	app.Commands = []cli.Command{
 		{
