@@ -1,19 +1,24 @@
-# userVhost
+# rb-ldap
 
-Script to query ldap for user info to generate apache template conf for user
-vhosts.
+Script to interact with Redbrick LDAP.
+
+* query ldap for user info to generate apache template conf for user vhosts.
+* Search for users in ldap
 
 ## Installation
 
 ```console
-go get github.com/redbrick/userVhost
+go get github.com/redbrick/rbldap/cmd/rb-ldap
 ```
 
 ## Run
 
 ```console
-userVhost ./ldap.secret
+rb-ldap
 ```
 
-The conf will be output to the current dir. Run `userVhost -h` to get a list of
-flags
+## Notes
+
+The conf will be output to the current dir.
+
+Run `userVhost -h` to get a list of flags and commands.

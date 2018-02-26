@@ -1,7 +1,6 @@
-package main
+package rbuser
 
 import (
-	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -10,18 +9,7 @@ import (
 )
 
 // Generate user vhost conf from ldap
-func Generate(conf LdapConf, output string) (int, error) {
-	l, err := ldap.Dial("tcp", fmt.Sprintf("%s:%d", conf.Host, conf.Port))
-	if err != nil {
-		return 0, err
-	}
-	defer l.Close()
-
-	err = l.Bind(conf.User, conf.Password)
-	if err != nil {
-		return 0, err
-	}
-
+func Generate(l *ldap.Conn, output string) (int, error) {
 	searchRequest := ldap.NewSearchRequest(
 		"ou=accounts,o=redbrick",
 		ldap.ScopeSingleLevel, ldap.NeverDerefAliases,
@@ -35,7 +23,6 @@ func Generate(conf LdapConf, output string) (int, error) {
 	}
 	var vhosts []string
 	for _, entry := range sr.Entries {
-		uid := entry.GetAttributeValue("uid")
 		group := entry.GetAttributeValue("objectClass")
 		if group == "" {
 			gidNum, conversionErr := strconv.Atoi(entry.GetAttributeValue("gidNumber"))
@@ -45,7 +32,7 @@ func Generate(conf LdapConf, output string) (int, error) {
 			group = gidToGroup(gidNum)
 		}
 		if group != "" && group != "redbrick" && group != "reserved" {
-			u := rbUser{uid, []rune(uid)[0], group}
+			u := RBUser{UID: entry.GetAttributeValue("uid"), ObjectClass: group}
 			vhosts = append(vhosts, u.Vhost())
 		}
 	}
@@ -54,9 +41,6 @@ func Generate(conf LdapConf, output string) (int, error) {
 		return 0, err
 	}
 	defer f.Close()
-	if err != nil {
-		return 0, err
-	}
 	n, err := f.WriteString(strings.Join(vhosts, "\n"))
 	if err != nil {
 		return n, err
@@ -73,8 +57,6 @@ func gidToGroup(gid int) string {
 		return "society"
 	case 102:
 		return "club"
-	case 103:
-		return "member"
 	case 105:
 		return "founder"
 	case 107:

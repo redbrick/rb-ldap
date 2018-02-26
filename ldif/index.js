@@ -10,6 +10,37 @@ const fs = require('fs-extra');
 const { isEmpty, isUndefined } = require('lodash');
 const ldif = require('ldif');
 
+const vhost = user =>
+  `use VHost /storage/webtree/${user.username.charAt(0)}/${user.username} ${user.username} ${
+    user.group
+  } ${user.username}\n`;
+
+const ldap = ldif.parseFile('./entry.ldif');
+fs.appendFile(
+  'user_vhost_list.conf',
+  ldap.entries
+    .map(convertUser)
+    .filter(u => !isUndefined(u))
+    .join('\n'),
+);
+
+function convertUser(entry) {
+  const { attributes: { objectClass, uid, gidNumber } } = entry.toObject();
+  const user = { username: uid };
+  if (
+    objectClass === 'club' ||
+    objectClass === 'committe' ||
+    objectClass === 'society' ||
+    objectClass === 'associate' ||
+    objectClass === 'member'
+  ) {
+    user.group = objectClass;
+  }
+  if (isEmpty(user.group)) user.group = getGroup(gidNumber);
+  if (!isEmpty(user.username) && !isEmpty(user.group)) return vhost(user);
+  return undefined;
+}
+
 function getGroup(gid) {
   switch (gid) {
     case 100:
@@ -38,32 +69,3 @@ function getGroup(gid) {
       return 'member';
   }
 }
-
-const vhost = user =>
-  `use VHost /storage/webtree/${user.username.charAt(0)}/${user.username} ${user.username} ${
-    user.group
-  } ${user.username}\n`;
-
-const ldap = ldif.parseFile('./entry.ldif');
-fs.appendFile(
-  'user_vhost_list.conf',
-  ldap.entries
-    .map(entry => {
-      const { attributes: { objectClass, uid, gidNumber } } = entry.toObject();
-      const user = { username: uid };
-      if (
-        objectClass === 'club' ||
-        objectClass === 'committe' ||
-        objectClass === 'society' ||
-        objectClass === 'associate' ||
-        objectClass === 'member'
-      ) {
-        user.group = objectClass;
-      }
-      if (isEmpty(user.group)) user.group = getGroup(gidNumber);
-      if (!isEmpty(user.username) && !isEmpty(user.group)) return vhost(user);
-      return undefined;
-    })
-    .filter(u => !isUndefined(u))
-    .join('\n'),
-);
