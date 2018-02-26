@@ -10,9 +10,9 @@ import (
 	ldap "gopkg.in/ldap.v2"
 )
 
-// SearchRB search redbrick ldap for a given filter and return first user that matches
-func SearchRB(l *ldap.Conn, filter string) (RBUser, error) {
-	sr, err := l.Search(ldap.NewSearchRequest(
+// Search ldap for a given filter and return first user that matches
+func (l *RbLdap) Search(filter string) (RbUser, error) {
+	sr, err := l.Conn.Search(ldap.NewSearchRequest(
 		"ou=accounts,o=redbrick",
 		ldap.ScopeSingleLevel, ldap.NeverDerefAliases,
 		0, 0, false, filter,
@@ -22,7 +22,7 @@ func SearchRB(l *ldap.Conn, filter string) (RBUser, error) {
 			"shadowLastChange"}, nil,
 	))
 	if err != nil {
-		return RBUser{}, err
+		return RbUser{}, err
 	}
 	for _, entry := range sr.Entries {
 		noob, _ := strconv.ParseBool(entry.GetAttributeValue("newbie"))
@@ -35,7 +35,7 @@ func SearchRB(l *ldap.Conn, filter string) (RBUser, error) {
 		shadow, _ := time.Parse("2006-01-02 15:04:00", entry.GetAttributeValue("shadowLastChange"))
 		created, _ := time.Parse("2006-01-02 15:04:00", entry.GetAttributeValue("created"))
 		birthday, _ := time.Parse("2006-01-02 15:04:00", entry.GetAttributeValue("birthday"))
-		return RBUser{
+		return RbUser{
 			UID:              entry.GetAttributeValue("uid"),
 			ObjectClass:      entry.GetAttributeValue("objectClass"),
 			Newbie:           noob,
@@ -60,24 +60,24 @@ func SearchRB(l *ldap.Conn, filter string) (RBUser, error) {
 			ShadowLastChange: shadow,
 		}, nil
 	}
-	return RBUser{}, err
+	return RbUser{}, err
 }
 
 // SearchDCU search redbrick ldap for a given filter and return first user that matches
-func SearchDCU(l *ldap.Conn, filter string) (RBUser, error) {
-	sr, err := l.Search(ldap.NewSearchRequest(
+func (l *RbLdap) SearchDCU(filter string) (RbUser, error) {
+	sr, err := l.Conn.Search(ldap.NewSearchRequest(
 		"o=ad,o=dcu,o=ie",
 		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases,
 		0, 0, false, filter,
 		[]string{"employeeNumber", "givenName", "sn", "gecos", "mail", "l"}, nil,
 	))
 	if err != nil {
-		return RBUser{}, err
+		return RbUser{}, err
 	}
 	for _, entry := range sr.Entries {
 		dcuID, _ := strconv.Atoi(entry.GetAttributeValue("employeeNumber"))
 		course, year := courseYear(entry.GetAttributeValue("l"))
-		return RBUser{
+		return RbUser{
 			CN:      fmt.Sprintf("%s %s", entry.GetAttributeValue("givenname"), entry.GetAttributeValue("sn")),
 			Altmail: entry.GetAttributeValue("mail"),
 			ID:      dcuID,
@@ -85,7 +85,7 @@ func SearchDCU(l *ldap.Conn, filter string) (RBUser, error) {
 			Year:    year,
 		}, nil
 	}
-	return RBUser{}, err
+	return RbUser{}, err
 }
 
 func courseYear(whyNotTheSame string) (string, int) {

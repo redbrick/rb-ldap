@@ -6,35 +6,36 @@ import (
 
 	"github.com/redbrick/rbldap/pkg/rbuser"
 	"github.com/urfave/cli"
-	ldap "gopkg.in/ldap.v2"
 )
 
-func newRBLdap(ctx *cli.Context) (*ldap.Conn, error) {
+func newRbLdap(ctx *cli.Context) (*rbuser.RbLdap, error) {
 	if ctx.NArg() != 0 {
 		fmt.Fprintf(os.Stderr, "\n")
-		return &ldap.Conn{}, fmt.Errorf("Missing required arguments")
+		return &rbuser.RbLdap{}, fmt.Errorf("Missing required arguments")
 	}
 
-	rb := rbuser.LdapConf{
+	rb := rbuser.RbLdap{
 		User:     ctx.String("user"),
 		Password: ctx.String("password"),
 		Host:     ctx.String("host"),
 		Port:     ctx.Int("port"),
 	}
-	return rb.Connect()
+	rb.Connect()
+	return &rb, nil
 }
 
-func newDCULdap(ctx *cli.Context) (*ldap.Conn, error) {
+func newDcuLdap(ctx *cli.Context) (*rbuser.RbLdap, error) {
 	if ctx.NArg() != 0 {
 		fmt.Fprintf(os.Stderr, "\n")
-		return &ldap.Conn{}, fmt.Errorf("Missing required arguments")
+		return &rbuser.RbLdap{}, fmt.Errorf("Missing required arguments")
 	}
 
-	dcu := rbuser.LdapConf{
+	dcu := rbuser.RbLdap{
 		User:     ctx.String("dcu-user"),
 		Password: ctx.String("dcu-password"),
 		Host:     ctx.String("dcu-host"),
 		Port:     ctx.Int("dcu-port"),
 	}
-	return dcu.Connect()
+	dcu.Connect()
+	return &dcu, nil
 }

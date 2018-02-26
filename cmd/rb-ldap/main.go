@@ -85,8 +85,9 @@ func main() {
 			Action: rbldap.Generate,
 		},
 		{
-			Name:  "search",
-			Usage: "Search ldap for user",
+			Name:    "search",
+			Aliases: []string{"s"},
+			Usage:   "Search ldap for user",
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "mail, altmail",

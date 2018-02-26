@@ -7,7 +7,7 @@ import (
 )
 
 // Generate user vhost conf from ldap
-func Generate(l *ldap.Conn) ([]string, error) {
+func (l *RbLdap) Generate() ([]string, error) {
 	var vhosts []string
 	searchRequest := ldap.NewSearchRequest(
 		"ou=accounts,o=redbrick",
@@ -16,7 +16,7 @@ func Generate(l *ldap.Conn) ([]string, error) {
 		[]string{"objectClass", "uid", "gidNumber"},
 		nil,
 	)
-	sr, err := l.Search(searchRequest)
+	sr, err := l.Conn.Search(searchRequest)
 	if err != nil {
 		return vhosts, err
 	}
@@ -30,7 +30,7 @@ func Generate(l *ldap.Conn) ([]string, error) {
 			group = gidToGroup(gidNum)
 		}
 		if group != "" && group != "redbrick" && group != "reserved" {
-			u := RBUser{UID: entry.GetAttributeValue("uid"), ObjectClass: group}
+			u := RbUser{UID: entry.GetAttributeValue("uid"), ObjectClass: group}
 			vhosts = append(vhosts, u.Vhost())
 		}
 	}

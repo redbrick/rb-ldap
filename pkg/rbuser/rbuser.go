@@ -8,7 +8,7 @@ import (
 )
 
 // RBUser is the redbric ldap user
-type RBUser struct {
+type RbUser struct {
 	UID              string
 	UserType         string
 	ObjectClass      string
@@ -35,13 +35,13 @@ type RBUser struct {
 }
 
 // Vhost reutrn apache  macro template
-func (u *RBUser) Vhost() string {
+func (u *RbUser) Vhost() string {
 	initial := []rune(u.UID)[0]
 	return fmt.Sprintf("use VHost /storage/webtree/%s/%s %s %s %s", string(initial), u.UID, u.UID, u.ObjectClass, u.UID)
 }
 
 // PrettyPrint output user info to command line
-func (u *RBUser) PrettyPrint() error {
+func (u *RbUser) PrettyPrint() error {
 	const output = `
 	User Information
 	================

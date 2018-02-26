@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/redbrick/rbldap/pkg/rbuser"
 	"github.com/urfave/cli"
 )
 
@@ -16,11 +15,11 @@ func Search(ctx *cli.Context) error {
 	var re = regexp.MustCompile(`\ `)
 	name := re.ReplaceAllString(ctx.String("name"), `*$1*$2*`)
 	if ctx.Bool("dcu") {
-		dcu, err := newDCULdap(ctx)
+		dcu, err := newDcuLdap(ctx)
 		if err != nil {
 			return err
 		}
-		user, searchErr := rbuser.SearchDCU(dcu, filterAnd(
+		user, searchErr := dcu.SearchDCU(filterAnd(
 			filter("displayName", name),
 			filter("cn", ctx.String("user")),
 			id),
@@ -30,7 +29,7 @@ func Search(ctx *cli.Context) error {
 		}
 		return user.PrettyPrint()
 	}
-	rb, err := newRBLdap(ctx)
+	rb, err := newRbLdap(ctx)
 	if err != nil {
 		return err
 	}
@@ -38,7 +37,7 @@ func Search(ctx *cli.Context) error {
 	if ctx.Bool("noob") {
 		noob = "(newbie=TRUE)"
 	}
-	user, searchErr := rbuser.SearchRB(rb, filterAnd(
+	user, searchErr := rb.Search(filterAnd(
 		filter("cn", name),
 		filterOr(
 			filter("uid", ctx.String("user")),
