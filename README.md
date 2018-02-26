@@ -17,8 +17,8 @@ go get github.com/redbrick/rbldap/cmd/rb-ldap
 rb-ldap
 ```
 
+Run `rb-ldap -h` to get a list of flags and commands.
+
 ## Notes
 
-The conf will be output to the current dir.
-
-Run `userVhost -h` to get a list of flags and commands.
+The conf from `rb-ldag g` will be output to the current dir.
