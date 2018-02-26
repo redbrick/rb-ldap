@@ -67,7 +67,7 @@ func main() {
 
 		cli.BoolFlag{
 			Name:  "dry-run",
-			Usage: "output too console rather then file",
+			Usage: "output to console rather then file",
 		},
 	}
 	app.Commands = []cli.Command{
@@ -79,7 +79,7 @@ func main() {
 				cli.StringFlag{
 					Name:  "conf, c",
 					Value: "./user_vhost_list.conf",
-					Usage: "File to output conf too",
+					Usage: "Output configuration `FILE`",
 				},
 			},
 			Action: rbldap.Generate,

@@ -19,7 +19,7 @@ func Search(ctx *cli.Context) error {
 		if err != nil {
 			return err
 		}
-		user, searchErr := dcu.SearchDCU(filterAnd(
+		user, searchErr := dcu.Search(filterAnd(
 			filter("displayName", name),
 			filter("cn", ctx.String("user")),
 			id),

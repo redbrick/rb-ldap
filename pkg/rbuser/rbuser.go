@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-// RBUser is the redbric ldap user
+// RbUser is the redbric ldap user
 type RbUser struct {
 	UID              string
 	UserType         string

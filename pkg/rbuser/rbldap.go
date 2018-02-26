@@ -1,8 +1,6 @@
 package rbuser
 
 import (
-	"fmt"
-	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -10,9 +8,14 @@ import (
 	ldap "gopkg.in/ldap.v2"
 )
 
+// RbLdap Server object used for connecting to server
+type RbLdap struct {
+	*LdapConf
+}
+
 // Search ldap for a given filter and return first user that matches
-func (l *RbLdap) Search(filter string) (RbUser, error) {
-	sr, err := l.Conn.Search(ldap.NewSearchRequest(
+func (rb *RbLdap) Search(filter string) (RbUser, error) {
+	sr, err := rb.Conn.Search(ldap.NewSearchRequest(
 		"ou=accounts,o=redbrick",
 		ldap.ScopeSingleLevel, ldap.NeverDerefAliases,
 		0, 0, false, filter,
@@ -61,37 +64,4 @@ func (l *RbLdap) Search(filter string) (RbUser, error) {
 		}, nil
 	}
 	return RbUser{}, err
-}
-
-// SearchDCU search redbrick ldap for a given filter and return first user that matches
-func (l *RbLdap) SearchDCU(filter string) (RbUser, error) {
-	sr, err := l.Conn.Search(ldap.NewSearchRequest(
-		"o=ad,o=dcu,o=ie",
-		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases,
-		0, 0, false, filter,
-		[]string{"employeeNumber", "givenName", "sn", "gecos", "mail", "l"}, nil,
-	))
-	if err != nil {
-		return RbUser{}, err
-	}
-	for _, entry := range sr.Entries {
-		dcuID, _ := strconv.Atoi(entry.GetAttributeValue("employeeNumber"))
-		course, year := courseYear(entry.GetAttributeValue("l"))
-		return RbUser{
-			CN:      fmt.Sprintf("%s %s", entry.GetAttributeValue("givenname"), entry.GetAttributeValue("sn")),
-			Altmail: entry.GetAttributeValue("mail"),
-			ID:      dcuID,
-			Course:  course,
-			Year:    year,
-		}, nil
-	}
-	return RbUser{}, err
-}
-
-func courseYear(whyNotTheSame string) (string, int) {
-	r, _ := regexp.Compile("([A-Z]+)")
-	rYear, _ := regexp.Compile("([0-9]+)")
-
-	year, _ := strconv.Atoi(rYear.FindString(whyNotTheSame))
-	return r.FindString(whyNotTheSame), year
 }

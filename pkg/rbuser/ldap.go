@@ -6,8 +6,8 @@ import (
 	ldap "gopkg.in/ldap.v2"
 )
 
-// RbLdap Server object used for connecting to server
-type RbLdap struct {
+// LdapConf Server object used for connecting to server
+type LdapConf struct {
 	User     string
 	Password string
 	Host     string
@@ -16,7 +16,7 @@ type RbLdap struct {
 }
 
 // Connect to ldap database
-func (conf *RbLdap) Connect() error {
+func (conf *LdapConf) Connect() error {
 	l, err := ldap.Dial("tcp", fmt.Sprintf("%s:%d", conf.Host, conf.Port))
 	if err != nil {
 		return err
