@@ -8,12 +8,12 @@ import (
 	ldap "gopkg.in/ldap.v2"
 )
 
-// DcuLdap Server object used for connecting to dcu AD
+// DcuLdap Server object used for connecting to DCU AD
 type DcuLdap struct {
 	*ldapConf
 }
 
-// NewDcuLdap create dcu AD connection
+// NewDcuLdap create ldap connection to DCU AD
 func NewDcuLdap(user, password, host string, port int) (*DcuLdap, error) {
 	conf := &ldapConf{user: user, password: password, host: host, port: port}
 	dcu := DcuLdap{conf}
