@@ -10,7 +10,15 @@ import (
 
 // RbLdap Server object used for connecting to server
 type RbLdap struct {
-	*LdapConf
+	*ldapConf
+}
+
+// NewRbLdap create ldap connection
+func NewRbLdap(user, password, host string, port int) (*RbLdap, error) {
+	conf := &ldapConf{user: user, password: password, host: host, port: port}
+	rb := RbLdap{conf}
+	rb.connect()
+	return &rb, nil
 }
 
 // Search ldap for a given filter and return first user that matches

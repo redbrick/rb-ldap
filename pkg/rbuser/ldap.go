@@ -7,21 +7,21 @@ import (
 )
 
 // LdapConf Server object used for connecting to server
-type LdapConf struct {
-	User     string
-	Password string
-	Host     string
-	Port     int
+type ldapConf struct {
+	user     string
+	password string
+	host     string
+	port     int
 	Conn     *ldap.Conn
 }
 
 // Connect to ldap database
-func (conf *LdapConf) Connect() error {
-	l, err := ldap.Dial("tcp", fmt.Sprintf("%s:%d", conf.Host, conf.Port))
+func (conf *ldapConf) connect() error {
+	l, err := ldap.Dial("tcp", fmt.Sprintf("%s:%d", conf.host, conf.port))
 	if err != nil {
 		return err
 	}
 	defer l.Close()
 	conf.Conn = l
-	return l.Bind(conf.User, conf.Password)
+	return l.Bind(conf.user, conf.password)
 }

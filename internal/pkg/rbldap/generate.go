@@ -5,12 +5,23 @@ import (
 	"os"
 	"strings"
 
+	"github.com/redbrick/rbldap/pkg/rbuser"
 	"github.com/urfave/cli"
 )
 
 // Generate takes cli context and generates user vhost for rbuser
 func Generate(ctx *cli.Context) error {
-	l, err := newRbLdap(ctx)
+	if ctx.NArg() != 0 {
+		fmt.Fprintf(os.Stderr, "\n")
+		return fmt.Errorf("Missing required arguments")
+	}
+
+	l, err := rbuser.NewRbLdap(
+		ctx.String("user"),
+		ctx.String("password"),
+		ctx.String("host"),
+		ctx.Int("port"),
+	)
 	if err != nil {
 		return err
 	}
