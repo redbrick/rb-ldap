@@ -23,9 +23,9 @@ func (l *RbLdap) Generate() ([]string, error) {
 	for _, entry := range sr.Entries {
 		group := entry.GetAttributeValue("objectClass")
 		if group == "" {
-			gidNum, conversionErr := strconv.Atoi(entry.GetAttributeValue("gidNumber"))
-			if conversionErr != nil {
-				return vhosts, conversionErr
+			gidNum, err := strconv.Atoi(entry.GetAttributeValue("gidNumber"))
+			if err != nil {
+				return vhosts, err
 			}
 			group = gidToGroup(gidNum)
 		}

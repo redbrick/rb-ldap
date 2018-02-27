@@ -11,12 +11,7 @@ import (
 
 // Generate takes cli context and generates user vhost for rbuser
 func Generate(ctx *cli.Context) error {
-	if ctx.NArg() != 0 {
-		fmt.Fprintf(os.Stderr, "\n")
-		return fmt.Errorf("Missing required arguments")
-	}
-
-	l, err := rbuser.NewRbLdap(
+	rb, err := rbuser.NewRbLdap(
 		ctx.String("user"),
 		ctx.String("password"),
 		ctx.String("host"),
@@ -25,7 +20,7 @@ func Generate(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	vhosts, err := l.Generate()
+	vhosts, err := rb.Generate()
 	if err != nil {
 		return err
 	}

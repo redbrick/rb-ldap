@@ -17,8 +17,7 @@ type DcuLdap struct {
 func NewDcuLdap(user, password, host string, port int) (*DcuLdap, error) {
 	conf := &ldapConf{user: user, password: password, host: host, port: port}
 	dcu := DcuLdap{conf}
-	dcu.connect()
-	return &dcu, nil
+	return &dcu, dcu.connect()
 }
 
 // Search dcu ldap for a given filter and return first user that matches
