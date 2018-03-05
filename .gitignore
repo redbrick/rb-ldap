@@ -122,3 +122,4 @@ Temporary Items
 *.ldif
 user_vhost_list.conf
 userVhost
+rb-ldap
