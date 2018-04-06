@@ -120,6 +120,12 @@ func main() {
 			},
 			Action: rbldap.Search,
 		},
+		{
+			Name:    "add",
+			Aliases: []string{"a"},
+			Usage:   "Add user to ldap",
+			Action:  rbldap.Add,
+		},
 	}
 
 	if err := app.Run(os.Args); err != nil {
