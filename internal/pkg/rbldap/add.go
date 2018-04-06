@@ -50,6 +50,7 @@ func Add(ctx *cli.Context) error {
 		return err
 	}
 	newUser.UID = username
+	// Prompt for rest of information
 	newUser.UserType = "member"
 	createdBy, err := p.ReadUser("Created by")
 	if err != nil {
