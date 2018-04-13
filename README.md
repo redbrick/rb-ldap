@@ -1,6 +1,6 @@
 # rb-ldap
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/redbrick/rbldap)](https://goreportcard.com/report/github.com/redbrick/rbldap)
+[![Go Report Card](https://goreportcard.com/badge/github.com/redbrick/rb-ldap)](https://goreportcard.com/report/github.com/redbrick/rb-ldap)
 
 Script to interact with Redbrick LDAP.
 
