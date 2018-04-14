@@ -22,6 +22,5 @@ func (conf *ldapConf) connect() error {
 		return err
 	}
 	conf.Conn = l
-	defer conf.Conn.Close()
 	return conf.Conn.Bind(conf.user, conf.password)
 }

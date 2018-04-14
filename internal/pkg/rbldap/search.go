@@ -22,14 +22,15 @@ func Search(ctx *cli.Context) error {
 	name := re.ReplaceAllString(ctx.String("name"), `*$1*$2*`)
 	if ctx.Bool("dcu") {
 		dcu, err := rbuser.NewDcuLdap(
-			ctx.String("dcu-user"),
-			ctx.String("dcu-password"),
-			ctx.String("dcu-host"),
-			ctx.Int("dcu-port"),
+			ctx.GlobalString("dcu-user"),
+			ctx.GlobalString("dcu-password"),
+			ctx.GlobalString("dcu-host"),
+			ctx.GlobalInt("dcu-port"),
 		)
 		if err != nil {
 			return err
 		}
+		defer dcu.Conn.Close()
 		user, searchErr := dcu.Search(filterAnd(
 			filter("displayName", name),
 			filter("cn", ctx.String("user")),
@@ -41,14 +42,15 @@ func Search(ctx *cli.Context) error {
 		return user.PrettyPrint()
 	}
 	rb, err := rbuser.NewRbLdap(
-		ctx.String("user"),
-		ctx.String("password"),
-		ctx.String("host"),
-		ctx.Int("port"),
+		ctx.GlobalString("user"),
+		ctx.GlobalString("password"),
+		ctx.GlobalString("host"),
+		ctx.GlobalInt("port"),
 	)
 	if err != nil {
 		return err
 	}
+	defer rb.Conn.Close()
 	noob := ""
 	if ctx.Bool("noob") {
 		noob = "(newbie=TRUE)"

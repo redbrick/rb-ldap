@@ -12,19 +12,20 @@ import (
 // Generate takes cli context and generates user vhost for rbuser
 func Generate(ctx *cli.Context) error {
 	rb, err := rbuser.NewRbLdap(
-		ctx.String("user"),
-		ctx.String("password"),
-		ctx.String("host"),
-		ctx.Int("port"),
+		ctx.GlobalString("user"),
+		ctx.GlobalString("password"),
+		ctx.GlobalString("host"),
+		ctx.GlobalInt("port"),
 	)
 	if err != nil {
 		return err
 	}
+	defer rb.Conn.Close()
 	vhosts, err := rb.Generate()
 	if err != nil {
 		return err
 	}
-	if ctx.Bool("dry-run") {
+	if ctx.GlobalBool("dry-run") {
 		fmt.Print(strings.Join(vhosts, "\n"))
 		return nil
 	}
