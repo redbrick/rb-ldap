@@ -49,12 +49,15 @@ func Add(ctx *cli.Context) error {
 		return err
 	}
 	newUser.UID = username
-	// Prompt for rest of information
 	newUser.UserType = "member"
 	createdBy, err := p.ReadUser("Created by")
 	if err != nil {
 		return err
 	}
 	newUser.CreatedBy = createdBy
-	return rb.Add(newUser)
+	mailUser, err := p.confirm("Mail user Login info")
+	if err != nil {
+		return err
+	}
+	return rb.Add(newUser, mailUser)
 }

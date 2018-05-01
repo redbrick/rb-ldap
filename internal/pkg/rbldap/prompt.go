@@ -6,18 +6,21 @@ import (
 	"os"
 	"os/user"
 	"strconv"
+	"strings"
 )
 
-type prompt struct{}
+type prompt struct {
+	reader *bufio.Reader
+}
 
 func newPrompt() prompt {
-	return prompt{}
+	return prompt{bufio.NewReader(os.Stdin)}
 }
 
 func (p *prompt) ReadString(message string) (string, error) {
-	reader := bufio.NewReader(os.Stdin)
 	fmt.Print(message + ": ")
-	return reader.ReadString('\n')
+	res, err := p.reader.ReadString('\n')
+	return strings.TrimSpace(res), err
 }
 
 func (p *prompt) ReadInt(message string) (int, error) {
@@ -41,4 +44,16 @@ func (p *prompt) ReadUser(message string) (string, error) {
 		return user.Username, nil
 	}
 	return response, nil
+}
+
+func (p *prompt) confirm(message string) (bool, error) {
+	res, err := p.ReadString(message + " [y/N]")
+	if err != nil {
+		return false, err
+	}
+	// Empty input (i.e. "\n")
+	if len(res) < 2 {
+		return false, nil
+	}
+	return strings.ToLower(res)[0] == 'y', nil
 }

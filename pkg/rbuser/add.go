@@ -11,7 +11,7 @@ import (
 )
 
 // Add a user to ldap
-func (rb *RbLdap) Add(user RbUser) error {
+func (rb *RbLdap) Add(user RbUser, mailUser bool) error {
 	addition := ldap.NewAddRequest(fmt.Sprintf("cn=%s,ou=ldap,o=redbrick", user.CN))
 	now := time.Now()
 	uidNumber, err := rb.findAvailableUID()
@@ -20,6 +20,8 @@ func (rb *RbLdap) Add(user RbUser) error {
 	}
 	user.UIDNumber = uidNumber
 	user.GidNumber = groupToGID(user.UserType)
+	user.UserPassword = passwd(12)
+	user.Newbie = true
 	addition.Attribute("gidNumber", []string{string(user.GidNumber)})
 	addition.Attribute("uidNumber", []string{string(user.UIDNumber)})
 	addition.Attribute("uid", []string{user.UID})
@@ -39,7 +41,7 @@ func (rb *RbLdap) Add(user RbUser) error {
 	addition.Attribute("gecos", []string{user.CN})
 	addition.Attribute("loginShell", []string{"/usr/local/shells/zsh"})
 	addition.Attribute("homeDirectory", []string{"/home/" + user.UserType + "/" + string([]rune(user.UID)[0]) + "/" + user.UID})
-	addition.Attribute("userPassword", []string{passwd(12)})
+	addition.Attribute("userPassword", []string{user.UserPassword})
 	addition.Attribute("host", user.Host)
 	addition.Attribute("shadowlastchanged", []string{now.Format("2006-01-02 15:04:00")})
 	addition.Attribute("birthday", []string{user.Birthday.Format("2006-01-02 15:04:00")})
@@ -52,7 +54,10 @@ func (rb *RbLdap) Add(user RbUser) error {
 	if err := user.LinkPublicHTML(); err != nil {
 		return err
 	}
-	return rb.Conn.Add(addition)
+	if err := rb.Conn.Add(addition); err != nil || !mailUser {
+		return err
+	}
+	return user.mailAccountUpdate()
 }
 
 func (rb *RbLdap) findAvailableUID() (int, error) {

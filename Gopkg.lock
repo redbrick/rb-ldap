@@ -8,10 +8,22 @@
   revision = "a1c7408de3f632d86eee604a3bb755f1ffb68226"
 
 [[projects]]
+  branch = "v3"
+  name = "gopkg.in/alexcesaro/quotedprintable.v3"
+  packages = ["."]
+  revision = "2caba252f4dc53eaf6b553000885530023f54623"
+
+[[projects]]
   name = "gopkg.in/asn1-ber.v1"
   packages = ["."]
   revision = "379148ca0225df7a432012b8df0355c2a2063ac0"
   version = "v1.2"
+
+[[projects]]
+  name = "gopkg.in/gomail.v2"
+  packages = ["."]
+  revision = "41f3572897373c5538c50a2402db15db079fa4fd"
+  version = "2.0.0"
 
 [[projects]]
   name = "gopkg.in/ldap.v2"
@@ -22,6 +34,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "223c959929ebd1fe2b6728ee05b317c9900743171fcce4f2bb5e8ee3a9889ab6"
+  inputs-digest = "5e3088d1baa0eeb11bbc1ffc9543693a82b72b6a31aaa2ceb256e5b2c7cd96f1"
   solver-name = "gps-cdcl"
   solver-version = 1
