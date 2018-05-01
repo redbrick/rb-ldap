@@ -3,6 +3,8 @@ package rbuser
 import (
 	"fmt"
 	"os"
+	"sort"
+	"strconv"
 	"time"
 
 	ldap "gopkg.in/ldap.v2"
@@ -12,7 +14,7 @@ import (
 func (rb *RbLdap) Add(user *RbUser) error {
 	addition := ldap.NewAddRequest(fmt.Sprintf("cn=%s,ou=ldap,o=redbrick", user.CN))
 	now := time.Now()
-	uidNumber, err := findAvailableUID()
+	uidNumber, err := rb.findAvailableUID()
 	if err != nil {
 		return err
 	}
@@ -52,7 +54,24 @@ func (rb *RbLdap) Add(user *RbUser) error {
 	return rb.Conn.Add(addition)
 }
 
-func findAvailableUID() (int, error) {}
+func (rb *RbLdap) findAvailableUID() (int, error) {
+	sr, err := rb.Conn.Search(ldap.NewSearchRequest(
+		"ou=accounts,o=redbrick",
+		ldap.ScopeSingleLevel, ldap.NeverDerefAliases,
+		0, 0, false, "(&())",
+		[]string{"uidNumber"}, nil,
+	))
+	if err != nil {
+		return 0, err
+	}
+	UIDNumbers := make([]int, 0, len(sr.Entries))
+	for _, entry := range sr.Entries {
+		i, _ := strconv.Atoi(entry.GetAttributeValue("uidNumber"))
+		UIDNumbers = append(UIDNumbers, i)
+	}
+	sort.Ints(UIDNumbers)
+	return UIDNumbers[len(UIDNumbers)-1] + 1, nil
+}
 
 func createHome(uid, gid int, user *RbUser) error {
 	folder := "/home/" + user.UserType + "/" + string([]rune(user.UID)[0]) + "/" + user.UID
