@@ -22,6 +22,7 @@ func (rb *RbLdap) Add(user RbUser, mailUser bool) error {
 	user.GidNumber = groupToGID(user.UserType)
 	user.UserPassword = passwd(12)
 	user.Newbie = true
+	user.HomeDirectory = "/home/" + user.UserType + "/" + string([]rune(user.UID)[0]) + "/" + user.UID
 	addition.Attribute("gidNumber", []string{string(user.GidNumber)})
 	addition.Attribute("uidNumber", []string{string(user.UIDNumber)})
 	addition.Attribute("uid", []string{user.UID})
@@ -40,7 +41,7 @@ func (rb *RbLdap) Add(user RbUser, mailUser bool) error {
 	addition.Attribute("createdBy", []string{user.CreatedBy})
 	addition.Attribute("gecos", []string{user.CN})
 	addition.Attribute("loginShell", []string{"/usr/local/shells/zsh"})
-	addition.Attribute("homeDirectory", []string{"/home/" + user.UserType + "/" + string([]rune(user.UID)[0]) + "/" + user.UID})
+	addition.Attribute("homeDirectory", []string{user.HomeDirectory})
 	addition.Attribute("userPassword", []string{user.UserPassword})
 	addition.Attribute("host", user.Host)
 	addition.Attribute("shadowlastchanged", []string{now.Format("2006-01-02 15:04:00")})
@@ -81,11 +82,10 @@ func (rb *RbLdap) findAvailableUID() (int, error) {
 
 // CreateHome Create a users home dir and chown it to them
 func (user *RbUser) CreateHome() error {
-	folder := "/home/" + user.UserType + "/" + string([]rune(user.UID)[0]) + "/" + user.UID
-	if err := os.MkdirAll(folder, os.ModePerm); err != nil {
+	if err := os.MkdirAll(user.HomeDirectory, os.ModePerm); err != nil {
 		return err
 	}
-	return os.Chown(folder, user.UIDNumber, user.GidNumber)
+	return os.Chown(user.HomeDirectory, user.UIDNumber, user.GidNumber)
 }
 
 // CreateWebDir Create a users Web dir and chown it to them
@@ -99,5 +99,5 @@ func (user *RbUser) CreateWebDir() error {
 
 // LinkPublicHTML Link a users Webdir to their home dir
 func (user *RbUser) LinkPublicHTML() error {
-	return os.Symlink("/webtree/"+string([]rune(user.UID)[0])+"/"+user.UID, "/home/"+user.UserType+"/"+string([]rune(user.UID)[0])+"/"+user.UID+"/public_html")
+	return os.Symlink("/webtree/"+string([]rune(user.UID)[0])+"/"+user.UID, user.HomeDirectory+"/public_html")
 }
