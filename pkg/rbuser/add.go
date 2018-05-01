@@ -2,6 +2,7 @@ package rbuser
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	ldap "gopkg.in/ldap.v2"
@@ -53,8 +54,22 @@ func (rb *RbLdap) Add(user *RbUser) error {
 
 func findAvailableUID() (int, error) {}
 
-func createHome(uid, gid int, user *RbUser) error {}
+func createHome(uid, gid int, user *RbUser) error {
+	folder := "/home/" + user.UserType + "/" + string([]rune(user.UID)[0]) + "/" + user.UID
+	if err := os.MkdirAll(folder, os.ModePerm); err != nil {
+		return err
+	}
+	return os.Chown(folder, uid, gid)
+}
 
-func createWebDir(uid, gid int, user *RbUser) error {}
+func createWebDir(uid, gid int, user *RbUser) error {
+	folder := "/webtree/" + string([]rune(user.UID)[0]) + "/" + user.UID
+	if err := os.MkdirAll(folder, os.ModePerm); err != nil {
+		return err
+	}
+	return os.Chown(folder, uid, gid)
+}
 
-func linkPublicHTML(user *RbUser) error {}
+func linkPublicHTML(user *RbUser) error {
+	return os.Symlink("/webtree/"+string([]rune(user.UID)[0])+"/"+user.UID, "/home/"+user.UserType+"/"+string([]rune(user.UID)[0])+"/"+user.UID+"/public_html")
+}
