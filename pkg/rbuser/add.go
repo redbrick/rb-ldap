@@ -11,11 +11,13 @@ import (
 func (rb *RbLdap) Add(user *RbUser) error {
 	addition := ldap.NewAddRequest(fmt.Sprintf("cn=%s,ou=ldap,o=redbrick", user.CN))
 	now := time.Now()
-	/*
-	   uidNumber: 102659
-	   gidNumber: 103
-
-	*/
+	uidNumber, err := findAvailableUID()
+	if err != nil {
+		return err
+	}
+	gidNumber := groupToGID(user.UserType)
+	addition.Attribute("gidNumber", []string{string(gidNumber)})
+	addition.Attribute("uidNumber", []string{string(uidNumber)})
 	addition.Attribute("uid", []string{user.UID})
 	addition.Attribute("usertype", []string{user.UserType})
 	addition.Attribute("objectClass", []string{user.UserType, "posixAccount", "top", "shadowAccount"})
@@ -37,5 +39,22 @@ func (rb *RbLdap) Add(user *RbUser) error {
 	addition.Attribute("host", user.Host)
 	addition.Attribute("shadowlastchanged", []string{now.Format("2006-01-02 15:04:00")})
 	addition.Attribute("birthday", []string{user.Birthday.Format("2006-01-02 15:04:00")})
+	if err := createHome(uidNumber, gidNumber, user); err != nil {
+		return err
+	}
+	if err := createWebDir(uidNumber, gidNumber, user); err != nil {
+		return err
+	}
+	if err := linkPublicHTML(user); err != nil {
+		return err
+	}
 	return rb.Conn.Add(addition)
 }
+
+func findAvailableUID() (int, error) {}
+
+func createHome(uid, gid int, user *RbUser) error {}
+
+func createWebDir(uid, gid int, user *RbUser) error {}
+
+func linkPublicHTML(user *RbUser) error {}
