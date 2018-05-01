@@ -2,6 +2,7 @@ package rbuser
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	ldap "gopkg.in/ldap.v2"
