@@ -2,9 +2,6 @@ package rbuser
 
 import (
 	"fmt"
-	"os"
-	"sort"
-	"strconv"
 	"time"
 
 	ldap "gopkg.in/ldap.v2"
@@ -59,45 +56,4 @@ func (rb *RbLdap) Add(user RbUser, mailUser bool) error {
 		return err
 	}
 	return rb.mailAccountUpdate(user)
-}
-
-func (rb *RbLdap) findAvailableUID() (int, error) {
-	sr, err := rb.Conn.Search(ldap.NewSearchRequest(
-		"ou=accounts,o=redbrick",
-		ldap.ScopeSingleLevel, ldap.NeverDerefAliases,
-		0, 0, false, "(&())",
-		[]string{"uidNumber"}, nil,
-	))
-	if err != nil {
-		return 0, err
-	}
-	UIDNumbers := make([]int, 0, len(sr.Entries))
-	for _, entry := range sr.Entries {
-		i, _ := strconv.Atoi(entry.GetAttributeValue("uidNumber"))
-		UIDNumbers = append(UIDNumbers, i)
-	}
-	sort.Ints(UIDNumbers)
-	return UIDNumbers[len(UIDNumbers)-1] + 1, nil
-}
-
-// CreateHome Create a users home dir and chown it to them
-func (user *RbUser) CreateHome() error {
-	if err := os.MkdirAll(user.HomeDirectory, os.ModePerm); err != nil {
-		return err
-	}
-	return os.Chown(user.HomeDirectory, user.UIDNumber, user.GidNumber)
-}
-
-// CreateWebDir Create a users Web dir and chown it to them
-func (user *RbUser) CreateWebDir() error {
-	folder := "/webtree/" + string([]rune(user.UID)[0]) + "/" + user.UID
-	if err := os.MkdirAll(folder, os.ModePerm); err != nil {
-		return err
-	}
-	return os.Chown(folder, user.UIDNumber, user.GidNumber)
-}
-
-// LinkPublicHTML Link a users Webdir to their home dir
-func (user *RbUser) LinkPublicHTML() error {
-	return os.Symlink("/webtree/"+string([]rune(user.UID)[0])+"/"+user.UID, user.HomeDirectory+"/public_html")
 }

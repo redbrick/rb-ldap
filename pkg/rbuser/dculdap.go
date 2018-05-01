@@ -48,7 +48,6 @@ func (dcu *DcuLdap) Search(filter string) (RbUser, error) {
 func splitCourseYear(courseYear string) (string, int) {
 	r, _ := regexp.Compile("([A-Z]+)")
 	rYear, _ := regexp.Compile("([0-9]+)")
-
 	year, _ := strconv.Atoi(rYear.FindString(courseYear))
 	return r.FindString(courseYear), year
 }

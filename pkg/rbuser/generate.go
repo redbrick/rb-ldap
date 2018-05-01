@@ -7,7 +7,7 @@ import (
 )
 
 // Generate user vhost conf from ldap
-func (l *RbLdap) Generate() ([]string, error) {
+func (rb *RbLdap) Generate() ([]string, error) {
 	var vhosts []string
 	searchRequest := ldap.NewSearchRequest(
 		"ou=accounts,o=redbrick",
@@ -16,7 +16,7 @@ func (l *RbLdap) Generate() ([]string, error) {
 		[]string{"objectClass", "uid", "gidNumber"},
 		nil,
 	)
-	sr, err := l.Conn.Search(searchRequest)
+	sr, err := rb.Conn.Search(searchRequest)
 	if err != nil {
 		return vhosts, err
 	}

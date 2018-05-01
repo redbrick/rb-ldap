@@ -17,17 +17,17 @@ Welcome back to Redbrick, the DCU Networking Society! Thank you for renewing.
 
 Your Redbrick Account details are:
 
-{{ with .UID }}username: {{ . }}
-{{ end }}{{ with .UserPassword }}password: {{ . }}
-{{ end }}{{ with .UserType }}account type: {{ . }}
-{{ end }}{{ with .CN }}name: {{ . }}
-{{ end }}{{ with .ID }}id number: {{ . }}
-{{ end }}{{ with .Course }}course: {{ . }}
-{{ end }}{{ with .Year }}year: {{ . }}{{ end }}
+{{- with .UID -}}username: {{ . }}
+{{- end -}}{{- with .UserPassword -}}password: {{ . }}
+{{- end -}}{{- with .UserType -}}account type: {{ . }}
+{{- end -}}{{- with .CN -}}name: {{ . }}
+{{- end -}}{{- with .ID -}}id number: {{ . }}
+{{- end -}}{{- with .Course -}}course: {{ . }}
+{{- end -}}{{- with .Year -}}year: {{ . }}{{ end }}
 
 -------------------------------------------------------------------------------
-your Redbrick webpage: https://{{ .UID }}.redbrick.dcu.ie/
-your Redbrick email: {{ .UID -}}@redbrick.dcu.ie
+{{- with .UID -}}Your Redbrick webpage: https://{{- . -}}.redbrick.dcu.ie/
+Your Redbrick email: {{- . -}}@redbrick.dcu.ie {{ end }}
 You can find out more about our services at:
 https://www.redbrick.dcu.ie/about/welcome
 

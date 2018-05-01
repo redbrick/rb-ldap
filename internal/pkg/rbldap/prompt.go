@@ -37,23 +37,16 @@ func (p *prompt) ReadUser(message string) (string, error) {
 		return "", err
 	}
 	response, err := p.ReadString(message + " [" + user.Username + "]")
-	if err != nil {
-		return "", err
-	}
-	if response == "" {
-		return user.Username, nil
+	if err != nil || response == "" {
+		return user.Username, err
 	}
 	return response, nil
 }
 
 func (p *prompt) confirm(message string) (bool, error) {
 	res, err := p.ReadString(message + " [y/N]")
-	if err != nil {
+	if err != nil || len(res) < 2 {
 		return false, err
-	}
-	// Empty input (i.e. "\n")
-	if len(res) < 2 {
-		return false, nil
 	}
 	return strings.ToLower(res)[0] == 'y', nil
 }
