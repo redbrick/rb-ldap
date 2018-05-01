@@ -16,6 +16,7 @@ func Generate(ctx *cli.Context) error {
 		ctx.GlobalString("password"),
 		ctx.GlobalString("host"),
 		ctx.GlobalInt("port"),
+		ctx.GlobalString("smtp"),
 	)
 	if err != nil {
 		return err

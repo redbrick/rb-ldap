@@ -7,7 +7,7 @@ import (
 	gomail "gopkg.in/gomail.v2"
 )
 
-func (user *RbUser) mailAccountUpdate() error {
+func (rb *RbLdap) mailAccountUpdate(user RbUser) error {
 	const email = `
 {{ if .Newbie }}
 Welcome to Redbrick, the DCU Networking Society! Thank you for joining.
@@ -50,6 +50,5 @@ Have fun!
 	}
 	m.SetBody("text/plain", tpl.String())
 
-	d := gomail.Dialer{Host: "mailhost.redbrick.dcu.ie", Port: 587}
-	return d.DialAndSend(m)
+	return rb.mail.DialAndSend(m)
 }

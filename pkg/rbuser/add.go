@@ -57,7 +57,7 @@ func (rb *RbLdap) Add(user RbUser, mailUser bool) error {
 	if err := rb.Conn.Add(addition); err != nil || !mailUser {
 		return err
 	}
-	return user.mailAccountUpdate()
+	return rb.mailAccountUpdate(user)
 }
 
 func (rb *RbLdap) findAvailableUID() (int, error) {

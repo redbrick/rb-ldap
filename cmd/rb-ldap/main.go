@@ -65,6 +65,12 @@ func main() {
 			FilePath: "/etc/dcu_ldap.secret",
 		},
 
+		cli.StringFlag{
+			Name:     "smtp",
+			Usage:    "smtp server to send email with",
+			FilePath: "mailhost.redbrick.dcu.ie",
+		},
+
 		cli.BoolFlag{
 			Name:  "dry-run",
 			Usage: "output to console rather then file",
