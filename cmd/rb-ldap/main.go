@@ -11,7 +11,7 @@ import (
 func main() {
 	app := cli.NewApp()
 	app.Name = "rb-ldap"
-	app.Usage = "Command line interface for Redbrick Ldap"
+	app.Usage = "Command line interface for Redbrick LDAP"
 	app.ArgsUsage = ""
 	app.HideVersion = true
 	app.EnableBashCompletion = true

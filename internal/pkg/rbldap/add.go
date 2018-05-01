@@ -56,5 +56,5 @@ func Add(ctx *cli.Context) error {
 		return err
 	}
 	newUser.CreatedBy = createdBy
-	return rbuser.Add(newUser)
+	return rb.Add(newUser)
 }

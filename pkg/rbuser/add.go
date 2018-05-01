@@ -11,7 +11,7 @@ import (
 )
 
 // Add a user to ldap
-func (rb *RbLdap) Add(user *RbUser) error {
+func (rb *RbLdap) Add(user RbUser) error {
 	addition := ldap.NewAddRequest(fmt.Sprintf("cn=%s,ou=ldap,o=redbrick", user.CN))
 	now := time.Now()
 	uidNumber, err := rb.findAvailableUID()
