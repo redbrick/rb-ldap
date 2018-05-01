@@ -18,9 +18,10 @@ func (rb *RbLdap) Add(user *RbUser) error {
 	if err != nil {
 		return err
 	}
-	gidNumber := groupToGID(user.UserType)
-	addition.Attribute("gidNumber", []string{string(gidNumber)})
-	addition.Attribute("uidNumber", []string{string(uidNumber)})
+	user.UIDNumber = uidNumber
+	user.GidNumber = groupToGID(user.UserType)
+	addition.Attribute("gidNumber", []string{string(user.GidNumber)})
+	addition.Attribute("uidNumber", []string{string(user.UIDNumber)})
 	addition.Attribute("uid", []string{user.UID})
 	addition.Attribute("usertype", []string{user.UserType})
 	addition.Attribute("objectClass", []string{user.UserType, "posixAccount", "top", "shadowAccount"})
@@ -42,13 +43,13 @@ func (rb *RbLdap) Add(user *RbUser) error {
 	addition.Attribute("host", user.Host)
 	addition.Attribute("shadowlastchanged", []string{now.Format("2006-01-02 15:04:00")})
 	addition.Attribute("birthday", []string{user.Birthday.Format("2006-01-02 15:04:00")})
-	if err := createHome(uidNumber, gidNumber, user); err != nil {
+	if err := user.CreateHome(); err != nil {
 		return err
 	}
-	if err := createWebDir(uidNumber, gidNumber, user); err != nil {
+	if err := user.CreateWebDir(); err != nil {
 		return err
 	}
-	if err := linkPublicHTML(user); err != nil {
+	if err := user.LinkPublicHTML(); err != nil {
 		return err
 	}
 	return rb.Conn.Add(addition)
@@ -73,22 +74,25 @@ func (rb *RbLdap) findAvailableUID() (int, error) {
 	return UIDNumbers[len(UIDNumbers)-1] + 1, nil
 }
 
-func createHome(uid, gid int, user *RbUser) error {
+// CreateHome Create a users home dir and chown it to them
+func (user *RbUser) CreateHome() error {
 	folder := "/home/" + user.UserType + "/" + string([]rune(user.UID)[0]) + "/" + user.UID
 	if err := os.MkdirAll(folder, os.ModePerm); err != nil {
 		return err
 	}
-	return os.Chown(folder, uid, gid)
+	return os.Chown(folder, user.UIDNumber, user.GidNumber)
 }
 
-func createWebDir(uid, gid int, user *RbUser) error {
+// CreateWebDir Create a users Web dir and chown it to them
+func (user *RbUser) CreateWebDir() error {
 	folder := "/webtree/" + string([]rune(user.UID)[0]) + "/" + user.UID
 	if err := os.MkdirAll(folder, os.ModePerm); err != nil {
 		return err
 	}
-	return os.Chown(folder, uid, gid)
+	return os.Chown(folder, user.UIDNumber, user.GidNumber)
 }
 
-func linkPublicHTML(user *RbUser) error {
+// LinkPublicHTML Link a users Webdir to their home dir
+func (user *RbUser) LinkPublicHTML() error {
 	return os.Symlink("/webtree/"+string([]rune(user.UID)[0])+"/"+user.UID, "/home/"+user.UserType+"/"+string([]rune(user.UID)[0])+"/"+user.UID+"/public_html")
 }
