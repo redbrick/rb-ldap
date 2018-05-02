@@ -60,5 +60,8 @@ func Add(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
+	if ctx.GlobalBool("dry-run") {
+		return newUser.PrettyPrint()
+	}
 	return rb.Add(newUser, mailUser)
 }

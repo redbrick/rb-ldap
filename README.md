@@ -6,6 +6,7 @@ Script to interact with Redbrick LDAP.
 
 * query ldap for user info to generate apache template conf for user vhosts.
 * Search for users in ldap
+* Create a new Redbrick user
 
 ## Installation
 
@@ -21,7 +22,8 @@ rb-ldap
 
 Run `rb-ldap -h` to get a list of flags and commands.
 
-```
+```console
+$ rb-ldap --help
 NAME:
    rb-ldap - Command line interface for Redbrick LDAP
 
@@ -43,6 +45,7 @@ GLOBAL OPTIONS:
    --dcu-port value        Port for DCU Active Directory host (default: 389)
    --password value        password for the ldap server [/etc/ldap.secret]
    --dcu-password value    password for the DCU ldap server [/etc/dcu_ldap.secret]
+   --smtp value            smtp server to send email with [mailhost.redbrick.dcu.ie]
    --dry-run               output too console rather then file
    --help, -h              show help
 ```
