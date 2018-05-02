@@ -12,8 +12,13 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "rb-ldap"
 	app.Usage = "Command line interface for Redbrick LDAP"
-	app.ArgsUsage = ""
-	app.HideVersion = true
+	app.Authors = []cli.Author{
+		cli.Author{
+			Name:  "Cian Butler",
+			Email: "butlerx@redbrick.dcu.ie",
+		},
+	}
+	app.Version = "0.2.0"
 	app.EnableBashCompletion = true
 
 	app.Flags = []cli.Flag{

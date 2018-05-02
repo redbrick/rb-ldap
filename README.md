@@ -30,6 +30,12 @@ NAME:
 USAGE:
    rb-ldap [global options] command [command options] [arguments...]
 
+VERSION:
+   0.2.0
+
+AUTHOR:
+   Cian Butler <butlerx@redbrick.dcu.ie>
+
 COMMANDS:
      generate, g  generate list for uservhost macro
      search       Search ldap for user
