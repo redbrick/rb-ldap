@@ -9,7 +9,7 @@ import (
 
 // Add a user to ldap
 func (rb *RbLdap) Add(user RbUser, mailUser bool) error {
-	addition := ldap.NewAddRequest(fmt.Sprintf("cn=%s,ou=ldap,o=redbrick", user.CN))
+	addition := ldap.NewAddRequest(fmt.Sprintf("uid=%s,ou=ldap,o=redbrick", user.UID))
 	now := time.Now()
 	uidNumber, err := rb.findAvailableUID()
 	if err != nil {

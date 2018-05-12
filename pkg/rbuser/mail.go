@@ -13,7 +13,7 @@ func (rb *RbLdap) mailAccountUpdate(user RbUser) error {
 Welcome to Redbrick, the DCU Networking Society! Thank you for joining.
 {{ else }}
 Welcome back to Redbrick, the DCU Networking Society! Thank you for renewing.
-
+{{ end }}
 
 Your Redbrick Account details are:
 
@@ -50,5 +50,5 @@ Have fun!
 	}
 	m.SetBody("text/plain", tpl.String())
 
-	return rb.mail.DialAndSend(m)
+	return rb.Mail.DialAndSend(m)
 }

@@ -9,7 +9,7 @@ import (
 
 // Update a user in ldap
 func (rb *RbLdap) Update(user RbUser) error {
-	modification := ldap.NewModifyRequest(fmt.Sprintf("cn=%s,ou=ldap,o=redbrick", user.CN))
+	modification := ldap.NewModifyRequest(fmt.Sprintf("uid=%s,ou=ldap,o=redbrick", user.UID))
 	now := time.Now()
 	modification.Replace("cn", []string{user.CN})
 	modification.Replace("altmail", []string{user.Altmail})
