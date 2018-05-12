@@ -36,11 +36,11 @@ func (p *prompt) ReadUser(message string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	response, err := p.ReadString(message + " [" + user.Username + "]")
-	if err != nil || response == "" {
+	res, err := p.ReadString(message + " [" + user.Username + "]")
+	if err != nil || len(res) < 2 {
 		return user.Username, err
 	}
-	return response, nil
+	return res, nil
 }
 
 func (p *prompt) confirm(message string) (bool, error) {
@@ -49,4 +49,12 @@ func (p *prompt) confirm(message string) (bool, error) {
 		return false, err
 	}
 	return strings.ToLower(res)[0] == 'y', nil
+}
+
+func (p *prompt) update(message, original string) (string, error) {
+	res, err := p.ReadString(message + " [" + original + "]")
+	if err != nil || len(res) < 2 {
+		return original, err
+	}
+	return res, nil
 }

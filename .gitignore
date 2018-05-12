@@ -123,3 +123,4 @@ Temporary Items
 user_vhost_list.conf
 userVhost
 rb-ldap
+!cmd/rb-ldap
