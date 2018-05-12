@@ -3,6 +3,7 @@ package rbldap
 import (
 	"bufio"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/user"
 	"strconv"
@@ -43,7 +44,7 @@ func (p *prompt) ReadUser(message string) (string, error) {
 	return res, nil
 }
 
-func (p *prompt) confirm(message string) (bool, error) {
+func (p *prompt) Confirm(message string) (bool, error) {
 	res, err := p.ReadString(message + " [y/N]")
 	if err != nil || len(res) < 2 {
 		return false, err
@@ -51,10 +52,49 @@ func (p *prompt) confirm(message string) (bool, error) {
 	return strings.ToLower(res)[0] == 'y', nil
 }
 
-func (p *prompt) update(message, original string) (string, error) {
+func (p *prompt) Update(message, original string) string {
 	res, err := p.ReadString(message + " [" + original + "]")
 	if err != nil || len(res) < 2 {
-		return original, err
+		return original
 	}
-	return res, nil
+	return res
+}
+
+func (p *prompt) UpdateInt(message string, original int) int {
+	res := p.Update(message, strconv.Itoa(original))
+	result, err := strconv.Atoi(res)
+	if err != nil {
+		return original
+	}
+	return result
+}
+
+func (p *prompt) UpdateShell(original string) string {
+	content, err := ioutil.ReadFile("/etc/shells")
+	if err != nil {
+		return original
+	}
+	var shells []string
+	for _, str := range strings.Split(string(content), "\n") {
+		// Check for empty lines or comments
+		if str != "" && string([]rune(str)[0]) != "#" {
+			shells = append(shells, str)
+		}
+	}
+	for {
+		res, err := p.ReadString("User's Shell" + " [" + original + "]")
+		if err != nil || !validShell(shells, res) {
+			fmt.Printf("Your Shell choice is not valid.\n Availble shells are: %+q\n", shells)
+		}
+		return res
+	}
+}
+
+func validShell(shells []string, check string) bool {
+	for _, shell := range shells {
+		if shell == check {
+			return true
+		}
+	}
+	return false
 }

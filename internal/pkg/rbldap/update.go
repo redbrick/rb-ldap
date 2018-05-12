@@ -2,6 +2,7 @@ package rbldap
 
 import (
 	"errors"
+	"time"
 
 	"github.com/redbrick/rbldap/pkg/rbuser"
 	"github.com/urfave/cli"
@@ -38,5 +39,20 @@ func Update(ctx *cli.Context) error {
 		return errors.New("User not found")
 	}
 	// Prompt for details to change
+	user.CN = p.Update("User's name", user.CN)
+	user.Altmail = p.Update("User's email", user.Altmail)
+	user.Course = p.Update("User's Course", user.Course)
+	user.Year = p.UpdateInt("User's Year", user.Year)
+	updatedBy, err := p.ReadUser("Updated By")
+	if err != nil {
+		return err
+	}
+	user.UpdatedBy = updatedBy
+	user.LoginShell = p.UpdateShell(user.LoginShell)
+	birthday, err := time.Parse("2006-01-02 15:04:00", p.Update("Users name", user.Birthday.Format("2006-01-02 15:04:00")))
+	if err != nil {
+		return err
+	}
+	user.Birthday = birthday
 	return rb.Update(user)
 }

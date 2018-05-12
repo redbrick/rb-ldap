@@ -43,7 +43,7 @@ func (rb *RbLdap) Search(filter string) (RbUser, error) {
 			Course:           entry.GetAttributeValue("course"),
 			Year:             year,
 			YearsPaid:        yearsPaid,
-			Updatedby:        entry.GetAttributeValue("updatedBy"),
+			UpdatedBy:        entry.GetAttributeValue("updatedBy"),
 			Updated:          updated,
 			CreatedBy:        entry.GetAttributeValue("createdBy"),
 			Created:          created,

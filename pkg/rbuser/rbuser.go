@@ -19,7 +19,7 @@ type RbUser struct {
 	Course           string // DCU course code
 	Year             int    // DCU course year number/code
 	YearsPaid        int    // Number of years paid (integer)
-	Updatedby        string // Username of user last to update
+	UpdatedBy        string // Username of user last to update
 	Updated          time.Time
 	CreatedBy        string // Username of user that created them
 	Created          time.Time
@@ -54,7 +54,7 @@ func (u *RbUser) PrettyPrint() error {
 	{{ end }}{{ with .Course }}course: {{ . }}
 	{{ end }}{{ with .Year }}year: {{ . }}
 	{{ end }}{{ with .YearsPaid }}yearsPaid: {{ . }}
-	{{ end }}{{ with .Updatedby }}updatedby: {{ . }}
+	{{ end }}{{ with .UpdatedBy }}updatedBy: {{ . }}
 	{{ end }}{{ with .Updated }}updated: {{ . }}
 	{{ end }}{{ with .CreatedBy }}createdby: {{ . }}
 	{{ end }}{{ with .Created }}created: {{ . }}
