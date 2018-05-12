@@ -25,6 +25,7 @@ func main() {
 		add,
 		generate,
 		search,
+		reset,
 		update,
 	}
 

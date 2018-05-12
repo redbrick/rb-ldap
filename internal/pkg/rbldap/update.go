@@ -10,18 +10,6 @@ import (
 
 // Update a user in ldap
 func Update(ctx *cli.Context) error {
-	p := newPrompt()
-	// Get User from arg if there prompt if not
-	username := ""
-	if ctx.NArg() > 0 {
-		username = ctx.Args().First()
-	} else {
-		name, err := p.ReadString("Enter Username")
-		if err != nil {
-			return err
-		}
-		username = name
-	}
 	rb, err := rbuser.NewRbLdap(
 		ctx.GlobalString("user"),
 		ctx.GlobalString("password"),
@@ -33,12 +21,16 @@ func Update(ctx *cli.Context) error {
 		return err
 	}
 	defer rb.Conn.Close()
-
+	username, err := getUsername(ctx.Args())
+	if err != nil {
+		return err
+	}
 	user, err := rb.Search(filterAnd(filter("uid", username)))
 	if user.UID == "" || err == nil {
 		return errors.New("User not found")
 	}
 	// Prompt for details to change
+	p := newPrompt()
 	user.CN = p.Update("User's name", user.CN)
 	user.Altmail = p.Update("User's email", user.Altmail)
 	user.Course = p.Update("User's Course", user.Course)
@@ -55,4 +47,13 @@ func Update(ctx *cli.Context) error {
 	}
 	user.Birthday = birthday
 	return rb.Update(user)
+}
+
+// Get Username from arg if there and prompt for it if not
+func getUsername(args cli.Args) (string, error) {
+	if len(args) > 0 {
+		return args.First(), nil
+	}
+	p := newPrompt()
+	return p.ReadString("Enter Username")
 }

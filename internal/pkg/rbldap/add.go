@@ -9,12 +9,6 @@ import (
 
 // Add a user to ldap
 func Add(ctx *cli.Context) error {
-	p := newPrompt()
-	// check username free
-	username, err := p.ReadString("Enter Username")
-	if err != nil {
-		return err
-	}
 	rb, err := rbuser.NewRbLdap(
 		ctx.GlobalString("user"),
 		ctx.GlobalString("password"),
@@ -26,11 +20,16 @@ func Add(ctx *cli.Context) error {
 		return err
 	}
 	defer rb.Conn.Close()
+	username, err := getUsername(ctx.Args())
+	if err != nil {
+		return err
+	}
 	foundUser, err := rb.Search(filterAnd(filter("uid", username)))
 	if foundUser.UID != "" || err != nil {
 		return errors.New("User Already exists")
 	}
 	// search dcu for id number and create RbUser
+	p := newPrompt()
 	id, err := p.ReadInt("Enter Student ID Number")
 	if err != nil {
 		return err
@@ -56,7 +55,7 @@ func Add(ctx *cli.Context) error {
 		return err
 	}
 	newUser.CreatedBy = createdBy
-	mailUser, err := p.confirm("Mail user Login info")
+	mailUser, err := p.Confirm("Mail user Login info")
 	if err != nil {
 		return err
 	}
