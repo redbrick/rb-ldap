@@ -24,8 +24,9 @@ func main() {
 	app.Commands = []cli.Command{
 		add,
 		generate,
-		search,
+		renew,
 		reset,
+		search,
 		update,
 	}
 
