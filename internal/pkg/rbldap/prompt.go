@@ -85,6 +85,8 @@ func (p *prompt) UpdateShell(original string) string {
 		res, err := p.ReadString("User's Shell" + " [" + original + "]")
 		if err != nil || !validShell(shells, res) {
 			fmt.Printf("Your Shell choice is not valid.\n Availble shells are: %+q\n", shells)
+		} else if len(res) < 2 {
+			return original
 		}
 		return res
 	}
