@@ -23,3 +23,12 @@ func (user *RbUser) CreateWebDir() error {
 func (user *RbUser) LinkPublicHTML() error {
 	return os.Symlink("/webtree/"+string([]rune(user.UID)[0])+"/"+user.UID, user.HomeDirectory+"/public_html")
 }
+
+// MigrateHome migrate a users home dir and chown it to them
+func (user *RbUser) MigrateHome(newHome string) error {
+	if err := os.Rename(user.HomeDirectory, newHome); err != nil {
+		return err
+	}
+	user.HomeDirectory = newHome
+	return user.LinkPublicHTML()
+}

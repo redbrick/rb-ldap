@@ -7,6 +7,10 @@ Script to interact with Redbrick LDAP.
 * query ldap for user info to generate apache template conf for user vhosts.
 * Search for users in ldap
 * Create a new Redbrick user
+* Renew a user
+* convert a users usertype
+* edit user info
+* reset a user's password
 
 ## Installation
 
@@ -37,10 +41,13 @@ AUTHOR:
    Cian Butler <butlerx@redbrick.dcu.ie>
 
 COMMANDS:
-     generate, g  generate list for uservhost macro
-     search       Search ldap for user
-     add, a       Add user to ldap
-     help, h      Shows a list of commands or help for one command
+     add, a           Add user to ldap
+     generate, g      generate list for uservhost macro
+     renew, r         renew a LDAP user
+     reset            reset a users password
+     search, s        Search ldap for user
+     update, u, edit  Update a user in ldap
+     help, h          Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
    --user value, -u value  ldap user, used for authentication (default: "cn=root,ou=ldap,o=redbrick")
@@ -52,8 +59,9 @@ GLOBAL OPTIONS:
    --password value        password for the ldap server [/etc/ldap.secret]
    --dcu-password value    password for the DCU ldap server [/etc/dcu_ldap.secret]
    --smtp value            smtp server to send email with [mailhost.redbrick.dcu.ie]
-   --dry-run               output too console rather then file
+   --dry-run               output to console rather then file
    --help, -h              show help
+   --version, -v           print the version
 ```
 
 ## Notes
