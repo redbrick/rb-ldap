@@ -11,9 +11,14 @@ import (
 func main() {
 	app := cli.NewApp()
 	app.Name = "rb-ldap"
-	app.Usage = "Command line interface for Redbrick Ldap"
-	app.ArgsUsage = ""
-	app.HideVersion = true
+	app.Usage = "Command line interface for Redbrick LDAP"
+	app.Authors = []cli.Author{
+		cli.Author{
+			Name:  "Cian Butler",
+			Email: "butlerx@redbrick.dcu.ie",
+		},
+	}
+	app.Version = "0.2.0"
 	app.EnableBashCompletion = true
 
 	app.Flags = []cli.Flag{
@@ -63,6 +68,12 @@ func main() {
 			Name:     "dcu-password",
 			Usage:    "password for the DCU ldap server",
 			FilePath: "/etc/dcu_ldap.secret",
+		},
+
+		cli.StringFlag{
+			Name:     "smtp",
+			Usage:    "smtp server to send email with",
+			FilePath: "mailhost.redbrick.dcu.ie",
 		},
 
 		cli.BoolFlag{
@@ -119,6 +130,12 @@ func main() {
 				},
 			},
 			Action: rbldap.Search,
+		},
+		{
+			Name:    "add",
+			Aliases: []string{"a"},
+			Usage:   "Add user to ldap",
+			Action:  rbldap.Add,
 		},
 	}
 

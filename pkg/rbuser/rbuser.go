@@ -36,8 +36,7 @@ type RbUser struct {
 
 // Vhost reutrn apache  macro template
 func (u *RbUser) Vhost() string {
-	initial := []rune(u.UID)[0]
-	return fmt.Sprintf("use VHost /storage/webtree/%s/%s %s %s %s", string(initial), u.UID, u.UID, u.ObjectClass, u.UID)
+	return fmt.Sprintf("use VHost /storage/webtree/%s/%s %s %s %s", string([]rune(u.UID)[0]), u.UID, u.UID, u.ObjectClass, u.UID)
 }
 
 // PrettyPrint output user info to command line
