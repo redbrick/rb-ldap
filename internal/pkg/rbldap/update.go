@@ -25,7 +25,7 @@ func Update(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	user, err := rb.Search(filterAnd(filter("uid", username)))
+	user, err := rb.SearchUser(filterAnd(filter("uid", username)))
 	if user.UID == "" || err == nil {
 		return errors.New("User not found")
 	}
@@ -41,7 +41,7 @@ func Update(ctx *cli.Context) error {
 	}
 	user.UpdatedBy = updatedBy
 	user.LoginShell = p.UpdateShell(user.LoginShell)
-	birthday, err := time.Parse("2006-01-02 15:04:00", p.Update("Users name", user.Birthday.Format("2006-01-02 15:04:00")))
+	birthday, err := time.Parse("2006-01-02 15:04:05", p.Update("Users name", user.Birthday.Format("2006-01-02 15:04:05")))
 	if err != nil {
 		return err
 	}

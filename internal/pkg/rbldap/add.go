@@ -24,7 +24,7 @@ func Add(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	foundUser, err := rb.Search(filterAnd(filter("uid", username)))
+	foundUser, err := rb.SearchUser(filterAnd(filter("uid", username)))
 	if foundUser.UID != "" || err != nil {
 		return errors.New("User Already exists")
 	}

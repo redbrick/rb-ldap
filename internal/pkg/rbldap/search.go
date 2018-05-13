@@ -56,7 +56,7 @@ func Search(ctx *cli.Context) error {
 	if ctx.Bool("noob") {
 		noob = "(newbie=TRUE)"
 	}
-	user, err := rb.Search(filterAnd(
+	user, err := rb.SearchUser(filterAnd(
 		filter("cn", name),
 		filterOr(
 			filter("uid", ctx.String("user")),

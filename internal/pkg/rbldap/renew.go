@@ -24,7 +24,7 @@ func Renew(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	user, err := rb.Search(filterAnd(filter("uid", username)))
+	user, err := rb.SearchUser(filterAnd(filter("uid", username)))
 	if user.UID == "" || err == nil {
 		return errors.New("User not found")
 	} else if user.YearsPaid == 1 {

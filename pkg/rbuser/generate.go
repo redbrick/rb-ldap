@@ -30,7 +30,7 @@ func (rb *RbLdap) Generate() ([]string, error) {
 			group = gidToGroup(gidNum)
 		}
 		if group != "" && group != "redbrick" && group != "reserved" {
-			u := RbUser{UID: entry.GetAttributeValue("uid"), ObjectClass: group}
+			u := RbUser{UID: entry.GetAttributeValue("uid"), UserType: group}
 			vhosts = append(vhosts, u.Vhost())
 		}
 	}

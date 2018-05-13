@@ -13,7 +13,7 @@ func (rb *RbLdap) ResetPasswd(uid string) error {
 	if err != nil {
 		return err
 	}
-	user, err := rb.Search(fmt.Sprintf("(&(uid=%s))", uid))
+	user, err := rb.SearchUser(fmt.Sprintf("(&(uid=%s))", uid))
 	if err != nil {
 		return err
 	}

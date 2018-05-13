@@ -23,7 +23,6 @@ func (rb *RbLdap) Add(user RbUser, mailUser bool) error {
 	addition.Attribute("gidNumber", []string{string(user.GidNumber)})
 	addition.Attribute("uidNumber", []string{string(user.UIDNumber)})
 	addition.Attribute("uid", []string{user.UID})
-	addition.Attribute("usertype", []string{user.UserType})
 	addition.Attribute("objectClass", []string{user.UserType, "posixAccount", "top", "shadowAccount"})
 	addition.Attribute("newbie", []string{"true"})
 	addition.Attribute("cn", []string{user.CN})
@@ -32,17 +31,16 @@ func (rb *RbLdap) Add(user RbUser, mailUser bool) error {
 	addition.Attribute("course", []string{user.Course})
 	addition.Attribute("year", []string{string(user.Year)})
 	addition.Attribute("yearspaid", []string{"1"})
-	addition.Attribute("updated", []string{now.Format("2006-01-02 15:04:00")})
+	addition.Attribute("updated", []string{now.Format(timeLayout)})
 	addition.Attribute("updatedBy", []string{user.CreatedBy})
-	addition.Attribute("created", []string{now.Format("2006-01-02 15:04:00")})
+	addition.Attribute("created", []string{now.Format(timeLayout)})
 	addition.Attribute("createdBy", []string{user.CreatedBy})
 	addition.Attribute("gecos", []string{user.CN})
 	addition.Attribute("loginShell", []string{"/usr/local/shells/zsh"})
 	addition.Attribute("homeDirectory", []string{user.HomeDirectory})
 	addition.Attribute("userPassword", []string{user.UserPassword})
 	addition.Attribute("host", user.Host)
-	addition.Attribute("shadowlastchanged", []string{now.Format("2006-01-02 15:04:00")})
-	addition.Attribute("birthday", []string{user.Birthday.Format("2006-01-02 15:04:00")})
+	addition.Attribute("birthday", []string{user.Birthday.Format(timeLayout)})
 	if err := user.CreateHome(); err != nil {
 		return err
 	}

@@ -2,14 +2,22 @@ package rbuser
 
 import (
 	"strconv"
-	"strings"
 	"time"
 
 	ldap "gopkg.in/ldap.v2"
 )
 
-// Search ldap for a given filter and return first user that matches
-func (rb *RbLdap) Search(filter string) (RbUser, error) {
+const timeLayout = "2006-01-02 15:04:05"
+
+// SearchUser ldap for a given filter and return first user that matches
+func (rb *RbLdap) SearchUser(filter string) (RbUser, error) {
+	users, err := rb.SearchUsers(filter)
+	return users[0], err
+}
+
+// SearchUsers ldap for a given filter and return all users that matches
+func (rb *RbLdap) SearchUsers(filter string) ([]RbUser, error) {
+	var users []RbUser
 	sr, err := rb.Conn.Search(ldap.NewSearchRequest(
 		"ou=accounts,o=redbrick",
 		ldap.ScopeSingleLevel, ldap.NeverDerefAliases,
@@ -20,7 +28,7 @@ func (rb *RbLdap) Search(filter string) (RbUser, error) {
 			"shadowLastChange"}, nil,
 	))
 	if err != nil {
-		return RbUser{}, err
+		return users, err
 	}
 	for _, entry := range sr.Entries {
 		noob, _ := strconv.ParseBool(entry.GetAttributeValue("newbie"))
@@ -29,13 +37,14 @@ func (rb *RbLdap) Search(filter string) (RbUser, error) {
 		yearsPaid, _ := strconv.Atoi(entry.GetAttributeValue("yearsPaid"))
 		uidNum, _ := strconv.Atoi(entry.GetAttributeValue("uidNumber"))
 		gidNum, _ := strconv.Atoi(entry.GetAttributeValue("gidNumber"))
-		updated, _ := time.Parse("2006-01-02 15:04:00", entry.GetAttributeValue("updated"))
-		shadow, _ := time.Parse("2006-01-02 15:04:00", entry.GetAttributeValue("shadowLastChange"))
-		created, _ := time.Parse("2006-01-02 15:04:00", entry.GetAttributeValue("created"))
-		birthday, _ := time.Parse("2006-01-02 15:04:00", entry.GetAttributeValue("birthday"))
-		return RbUser{
+		updated, _ := time.Parse(timeLayout, entry.GetAttributeValue("updated"))
+		shadow, _ := strconv.Atoi(entry.GetAttributeValue("shadowLastChange"))
+		created, _ := time.Parse(timeLayout, entry.GetAttributeValue("created"))
+		birthday, _ := time.Parse(timeLayout, entry.GetAttributeValue("birthday"))
+		users = append(users, RbUser{
 			UID:              entry.GetAttributeValue("uid"),
-			ObjectClass:      entry.GetAttributeValue("objectClass"),
+			UserType:         entry.GetAttributeValue("objectClass"),
+			ObjectClass:      entry.GetAttributeValues("objectClass"),
 			Newbie:           noob,
 			CN:               entry.GetAttributeValue("cn"),
 			Altmail:          entry.GetAttributeValue("altmail"),
@@ -54,9 +63,9 @@ func (rb *RbLdap) Search(filter string) (RbUser, error) {
 			LoginShell:       entry.GetAttributeValue("loginShell"),
 			HomeDirectory:    entry.GetAttributeValue("homeDirectory"),
 			UserPassword:     entry.GetAttributeValue("userPassword"),
-			Host:             strings.Split(entry.GetAttributeValue("host"), ","),
+			Host:             entry.GetAttributeValues("host"),
 			ShadowLastChange: shadow,
-		}, nil
+		})
 	}
-	return RbUser{}, err
+	return users, err
 }

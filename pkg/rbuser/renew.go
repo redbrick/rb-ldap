@@ -14,16 +14,16 @@ func (rb *RbLdap) Renew(user RbUser) error {
 	modification.Replace("course", []string{user.Course})
 	modification.Replace("yearspaid", []string{"1"})
 	modification.Replace("year", []string{string(user.Year)})
-	modification.Replace("updated", []string{now.Format("2006-01-02 15:04:00")})
+	modification.Replace("updated", []string{now.Format(timeLayout)})
 	modification.Replace("updatedBy", []string{user.UpdatedBy})
-	currentUser, err := rb.Search(fmt.Sprintf("(&(uid=%s))", user.UID))
+	currentUser, err := rb.SearchUser(fmt.Sprintf("(&(uid=%s))", user.UID))
 	if err != nil {
 		return err
 	}
 	if currentUser.UserType != user.UserType {
 		return rb.Conn.Modify(modification)
 	}
-	modification.Replace("usertype", []string{user.UserType})
+	modification.Replace("objectClass", []string{user.UserType, "posixAccount", "top", "shadowAccount"})
 	modification.Replace("homeDirectory", []string{user.HomeDirectory})
 	if err := rb.Conn.Modify(modification); err != nil {
 		return err

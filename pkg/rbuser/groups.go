@@ -1,57 +1,56 @@
 package rbuser
 
-func gidToGroup(gid int) string {
-	switch gid {
-	case 100:
-		return "committe"
-	case 101:
-		return "society"
-	case 102:
-		return "club"
-	case 105:
-		return "founder"
-	case 107:
-		return "associat"
-	case 109:
-		return "staff"
-	case 1016:
-		return "intersoc"
-	case 1017:
-		return "redbrick"
-	case 1014:
-		return "projects"
-	case 31382:
-		return "dcu"
-	default:
-		return "member"
-	}
+type group struct {
+	name string
+	id   int
 }
 
-func groupToGID(group string) int {
-	switch group {
-	case "committe":
-		return 100
-	case "society":
-		return 101
-	case "club":
-		return 102
-	case "founder":
-		return 105
-	case "associat":
-		return 107
-	case "staff":
-		return 109
-	case "intersoc":
-		return 1016
-	case "redbrick":
-		return 1017
-	case "projects":
-		return 1014
-	case "dcu":
-		return 31382
-	case "member":
-		return 103
-	default:
-		return 103
+var associatGroup = group{"associat", 107}
+var clubGroup = group{"club", 102}
+var committeeGroup = group{"committe", 100}
+var dcuGroup = group{"dcu", 31382}
+var founderGroup = group{"founder", 105}
+var intersocGroup = group{"intersoc", 1016}
+var memberGroup = group{"member", 103}
+var projectsGroup = group{"projects", 1014}
+var redbrickGroup = group{"redbrick", 1017}
+var societyGroup = group{"society", 101}
+var staffGroup = group{"staff", 109}
+
+var groups = []group{
+	associatGroup,
+	clubGroup,
+	committeeGroup,
+	dcuGroup,
+	founderGroup,
+	intersocGroup,
+	memberGroup,
+	projectsGroup,
+	redbrickGroup,
+	societyGroup,
+	staffGroup,
+}
+
+var userGroups = []group{
+	associatGroup,
+	memberGroup,
+	staffGroup,
+}
+
+func gidToGroup(gid int) string {
+	for _, group := range groups {
+		if group.id == gid {
+			return group.name
+		}
 	}
+	return ""
+}
+
+func groupToGID(groupName string) int {
+	for _, group := range groups {
+		if group.name == groupName {
+			return group.id
+		}
+	}
+	return 0
 }
