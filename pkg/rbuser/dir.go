@@ -1,6 +1,9 @@
 package rbuser
 
-import "os"
+import (
+	"fmt"
+	"os"
+)
 
 // CreateHome Create a users home dir and chown it to them
 func (user *RbUser) CreateHome() error {
@@ -12,7 +15,7 @@ func (user *RbUser) CreateHome() error {
 
 // CreateWebDir Create a users Web dir and chown it to them
 func (user *RbUser) CreateWebDir() error {
-	folder := "/webtree/" + string([]rune(user.UID)[0]) + "/" + user.UID
+	folder := fmt.Sprintf("/webtree/%d/%s", []rune(user.UID)[0], user.UID)
 	if err := os.MkdirAll(folder, os.ModePerm); err != nil {
 		return err
 	}
@@ -21,7 +24,7 @@ func (user *RbUser) CreateWebDir() error {
 
 // LinkPublicHTML Link a users Webdir to their home dir
 func (user *RbUser) LinkPublicHTML() error {
-	return os.Symlink("/webtree/"+string([]rune(user.UID)[0])+"/"+user.UID, user.HomeDirectory+"/public_html")
+	return os.Symlink(fmt.Sprintf("/webtree/%d/%s", []rune(user.UID)[0], user.UID), fmt.Sprintf("%s/public_html", user.HomeDirectory))
 }
 
 // MigrateHome migrate a users home dir and chown it to them
@@ -31,4 +34,14 @@ func (user *RbUser) MigrateHome(newHome string) error {
 	}
 	user.HomeDirectory = newHome
 	return user.LinkPublicHTML()
+}
+
+// DelWebDir Delete a users web dir
+func (user *RbUser) DelWebDir() error {
+	return os.RemoveAll(fmt.Sprintf("/webtree/%d/%s", []rune(user.UID)[0], user.UID))
+}
+
+// DelHomeDir Delete a users home dir
+func (user *RbUser) DelHomeDir() error {
+	return os.RemoveAll(user.HomeDirectory)
 }

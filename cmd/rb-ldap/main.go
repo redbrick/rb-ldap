@@ -23,12 +23,15 @@ func main() {
 	app.Flags = globalFlags
 	app.Commands = []cli.Command{
 		add,
+		alertUnpaid,
+		deleteUnpaid,
 		disable,
+		disableUnpaid,
 		generate,
-		renew,
-		renable,
-		reset,
 		newYear,
+		renable,
+		renew,
+		reset,
 		search,
 		update,
 	}
