@@ -28,7 +28,6 @@ func listAdd(list, email string) error {
 
 func listDel(list, email string) error {
 	cmd := exec.Command("/var/lib/mailman/bin/remove_members", list, email)
-	cmd.Stdin = strings.NewReader(fmt.Sprintf("%s\n", email))
 	listUser, err := user.Lookup("list")
 	if err != nil {
 		return nil
