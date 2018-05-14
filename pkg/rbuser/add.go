@@ -2,6 +2,8 @@ package rbuser
 
 import (
 	"fmt"
+	"os/exec"
+	"strconv"
 	"time"
 
 	ldap "gopkg.in/ldap.v2"
@@ -51,6 +53,9 @@ func (rb *RbLdap) Add(user RbUser, mailUser bool) error {
 	if err := user.LinkPublicHTML(); err != nil {
 		return err
 	}
+	if err := setQuota(user.UID, 1000000, 1100000, 800000, 1000000); err != nil {
+		return err
+	}
 	if err := listAdd("announce-redbrick", fmt.Sprintf("%s@redbrick.dcu.ie", user.UID)); err != nil {
 		return err
 	}
@@ -58,4 +63,9 @@ func (rb *RbLdap) Add(user RbUser, mailUser bool) error {
 		return err
 	}
 	return rb.mailAccountUpdate(user)
+}
+
+func setQuota(username string, bqs, bqh, iqs, iqh int) error {
+	cmd := exec.Command("/usr/sbin/setquota", "-r", username, strconv.Itoa(bqs), strconv.Itoa(bqh), strconv.Itoa(iqs), strconv.Itoa(iqh), "/storage")
+	return cmd.Run()
 }
