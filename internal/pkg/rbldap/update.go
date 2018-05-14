@@ -46,6 +46,9 @@ func Update(ctx *cli.Context) error {
 		return err
 	}
 	user.Birthday = birthday
+	if ctx.GlobalBool("dry-run") {
+		return user.PrettyPrint()
+	}
 	return rb.Update(user)
 }
 

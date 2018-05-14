@@ -54,6 +54,7 @@ func Add(ctx *cli.Context) error {
 		return err
 	}
 	newUser.CreatedBy = createdBy
+	newUser.Host = []string{"azazel", "pygmalion"}
 	mailUser, err := p.Confirm("Mail user Login info")
 	if err != nil {
 		return err

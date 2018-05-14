@@ -40,6 +40,7 @@ func (rb *RbLdap) Add(user RbUser, mailUser bool) error {
 	addition.Attribute("homeDirectory", []string{user.HomeDirectory})
 	addition.Attribute("userPassword", []string{user.UserPassword})
 	addition.Attribute("host", user.Host)
+	addition.Attribute("shadowlastchanged", []string{})
 	addition.Attribute("birthday", []string{user.Birthday.Format(timeLayout)})
 	if err := user.CreateHome(); err != nil {
 		return err

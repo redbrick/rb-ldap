@@ -26,6 +26,7 @@ func main() {
 		generate,
 		renew,
 		reset,
+		newYear,
 		search,
 		update,
 	}
