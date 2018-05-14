@@ -48,5 +48,8 @@ func (rb *RbLdap) DeleteUser(user RbUser) error {
 	if err := user.DelHomeDir(); err != nil {
 		return err
 	}
-	return user.DelWebDir()
+	if err := user.DelWebDir(); err != nil {
+		return err
+	}
+	return listDel("announce-redbrick", fmt.Sprintf("%s@redbrick.dcu.ie", user.UID))
 }

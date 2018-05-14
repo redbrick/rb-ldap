@@ -32,6 +32,7 @@ func main() {
 		renable,
 		renew,
 		reset,
+		resetShell,
 		search,
 		update,
 	}

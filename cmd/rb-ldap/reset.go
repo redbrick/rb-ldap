@@ -10,3 +10,9 @@ var reset = cli.Command{
 	Name:   "reset",
 	Usage:  "reset a users password",
 }
+
+var resetShell = cli.Command{
+	Action: rbldap.ResetShell,
+	Name:   "reset-shell",
+	Usage:  "reset a users shell",
+}

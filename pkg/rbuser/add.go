@@ -51,6 +51,9 @@ func (rb *RbLdap) Add(user RbUser, mailUser bool) error {
 	if err := user.LinkPublicHTML(); err != nil {
 		return err
 	}
+	if err := listAdd("announce-redbrick", fmt.Sprintf("%s@redbrick.dcu.ie", user.UID)); err != nil {
+		return err
+	}
 	if err := rb.Conn.Add(addition); err != nil || !mailUser {
 		return err
 	}

@@ -18,6 +18,11 @@ func (rb *RbLdap) ExpireUser(user RbUser) error {
 
 // RenableUser renable an account from ldap
 func (rb *RbLdap) RenableUser(user RbUser) error {
+	return rb.ResetShell(user)
+}
+
+// ResetShell reset a users shell
+func (rb *RbLdap) ResetShell(user RbUser) error {
 	user.LoginShell = defaultShell
 	return rb.Update(user)
 }
