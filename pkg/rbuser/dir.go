@@ -56,3 +56,17 @@ func (user *RbUser) DelWebDir() error {
 func (user *RbUser) DelHomeDir() error {
 	return os.RemoveAll(user.HomeDirectory)
 }
+
+// DelExtraFiles delete leftover files from user
+func (user *RbUser) DelExtraFiles() error {
+	for _, file := range []string{
+		"/local/share/agreement/statedir/%s",
+		"/var/mail/%s",
+		"/var/spool/cron/crontabs/%s",
+	} {
+		if err := os.Remove(fmt.Sprintf(file, user.UID)); err != nil {
+			return err
+		}
+	}
+	return nil
+}

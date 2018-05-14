@@ -17,7 +17,7 @@ func main() {
 			Email: "butlerx@redbrick.dcu.ie",
 		},
 	}
-	app.Version = "0.3.0"
+	app.Version = "0.6.0"
 	app.EnableBashCompletion = true
 
 	app.Flags = globalFlags
