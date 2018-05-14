@@ -7,6 +7,9 @@ import (
 
 // NewYear run new year migration on ldap
 func NewYear(ctx *cli.Context) error {
+	if ctx.GlobalBool("dry-run") {
+		return errNotImplemented
+	}
 	rb, err := rbuser.NewRbLdap(
 		ctx.GlobalString("user"),
 		ctx.GlobalString("password"),

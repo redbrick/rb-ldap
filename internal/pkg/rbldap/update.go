@@ -1,7 +1,6 @@
 package rbldap
 
 import (
-	"errors"
 	"time"
 
 	"github.com/redbrick/rbldap/pkg/rbuser"
@@ -27,7 +26,7 @@ func Update(ctx *cli.Context) error {
 	}
 	user, err := rb.SearchUser(filterAnd(filter("uid", username)))
 	if user.UID == "" || err == nil {
-		return errors.New("User not found")
+		return errUser404
 	}
 	// Prompt for details to change
 	p := newPrompt()
@@ -50,13 +49,4 @@ func Update(ctx *cli.Context) error {
 		return user.PrettyPrint()
 	}
 	return rb.Update(user)
-}
-
-// Get Username from arg if there and prompt for it if not
-func getUsername(args cli.Args) (string, error) {
-	if len(args) > 0 {
-		return args.First(), nil
-	}
-	p := newPrompt()
-	return p.ReadString("Enter Username")
 }

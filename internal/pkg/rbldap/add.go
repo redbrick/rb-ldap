@@ -1,8 +1,6 @@
 package rbldap
 
 import (
-	"errors"
-
 	"github.com/redbrick/rbldap/pkg/rbuser"
 	"github.com/urfave/cli"
 )
@@ -26,7 +24,7 @@ func Add(ctx *cli.Context) error {
 	}
 	foundUser, err := rb.SearchUser(filterAnd(filter("uid", username)))
 	if foundUser.UID != "" || err != nil {
-		return errors.New("User Already exists")
+		return errDuplicateUser
 	}
 	// search dcu for id number and create RbUser
 	p := newPrompt()

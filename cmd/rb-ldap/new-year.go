@@ -10,5 +10,5 @@ var newYear = cli.Command{
 	Category:    "Batch Commands",
 	Name:        "new-year",
 	Usage:       "Decriment Years Paid of all users to 1",
-	Description: "Migrate all users to no longer be marked as newbies and mark all users as unpaided. To Be run at the beggining of each year prior to C&S",
+	Description: "Migrate all users to no longer be marked as newbies and mark all users as unpaided. To Be run at the beginning of each year prior to C&S",
 }

@@ -8,6 +8,8 @@ import (
 	"os/user"
 	"strconv"
 	"strings"
+
+	"github.com/urfave/cli"
 )
 
 type prompt struct {
@@ -84,7 +86,7 @@ func (p *prompt) UpdateShell(original string) string {
 	for {
 		res, err := p.ReadString("User's Shell" + " [" + original + "]")
 		if err != nil || !validShell(shells, res) {
-			fmt.Printf("Your Shell choice is not valid.\n Availble shells are: %+q\n", shells)
+			fmt.Printf("Your Shell choice is not valid.\n Available shells are: %+q\n", shells)
 		} else if len(res) < 2 {
 			return original
 		}
@@ -99,4 +101,13 @@ func validShell(shells []string, check string) bool {
 		}
 	}
 	return false
+}
+
+// Get Username from arg if there and prompt for it if not
+func getUsername(args cli.Args) (string, error) {
+	if len(args) > 0 {
+		return args.First(), nil
+	}
+	p := newPrompt()
+	return p.ReadString("Enter Username")
 }

@@ -1,8 +1,6 @@
 package rbldap
 
 import (
-	"errors"
-
 	"github.com/redbrick/rbldap/pkg/rbuser"
 	"github.com/urfave/cli"
 )
@@ -10,7 +8,7 @@ import (
 // AlertUnPaid emails all unpaid users warning about account diable
 func AlertUnPaid(ctx *cli.Context) error {
 	if ctx.GlobalBool("dry-run") {
-		return errors.New("dry-run not implemented")
+		return errNotImplemented
 	}
 	p := newPrompt()
 	if confirm, err := p.Confirm("Email All Unpaid Users"); !confirm || err != nil {
@@ -33,7 +31,7 @@ func AlertUnPaid(ctx *cli.Context) error {
 // DisableUnPaid diable all unpaid users
 func DisableUnPaid(ctx *cli.Context) error {
 	if ctx.GlobalBool("dry-run") {
-		return errors.New("dry-run not implemented")
+		return errNotImplemented
 	}
 	p := newPrompt()
 	if confirm, err := p.Confirm("Disable All Unpaid Users"); !confirm || err != nil {
@@ -60,7 +58,7 @@ func DisableUnPaid(ctx *cli.Context) error {
 // DeleteUnPaid emails all unpaid users warning about account diable
 func DeleteUnPaid(ctx *cli.Context) error {
 	if ctx.GlobalBool("dry-run") {
-		return errors.New("dry-run not implemented")
+		return errNotImplemented
 	}
 	p := newPrompt()
 	if confirm, err := p.Confirm("Delete All Unpaid Users, THIS CANNOT BE UNDONE"); !confirm || err != nil {

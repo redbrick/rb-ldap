@@ -1,8 +1,6 @@
 package rbldap
 
 import (
-	"errors"
-
 	"github.com/redbrick/rbldap/pkg/rbuser"
 	"github.com/urfave/cli"
 )
@@ -26,7 +24,7 @@ func DisableUser(ctx *cli.Context) error {
 	}
 	user, err := rb.SearchUser(filterAnd(filter("uid", username)))
 	if user.UID == "" || err == nil {
-		return errors.New("User not found")
+		return errUser404
 	}
 	p := newPrompt()
 	updatedBy, err := p.ReadUser("Updated by")
@@ -35,7 +33,7 @@ func DisableUser(ctx *cli.Context) error {
 	}
 	user.UpdatedBy = updatedBy
 	if ctx.GlobalBool("dry-run") {
-		return errors.New("dry-run not implemented")
+		return errNotImplemented
 	}
 	return rb.DisableUser(user)
 }
@@ -59,7 +57,7 @@ func RenableUser(ctx *cli.Context) error {
 	}
 	user, err := rb.SearchUser(filterAnd(filter("uid", username)))
 	if user.UID == "" || err == nil {
-		return errors.New("User not found")
+		return errUser404
 	}
 	p := newPrompt()
 	updatedBy, err := p.ReadUser("Updated by")
@@ -68,7 +66,7 @@ func RenableUser(ctx *cli.Context) error {
 	}
 	user.UpdatedBy = updatedBy
 	if ctx.GlobalBool("dry-run") {
-		return errors.New("dry-run not implemented")
+		return errNotImplemented
 	}
 	return rb.RenableUser(user)
 }

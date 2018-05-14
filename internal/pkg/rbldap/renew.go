@@ -1,7 +1,7 @@
 package rbldap
 
 import (
-	"errors"
+	"fmt"
 
 	"github.com/redbrick/rbldap/pkg/rbuser"
 	"github.com/urfave/cli"
@@ -26,7 +26,7 @@ func Renew(ctx *cli.Context) error {
 	}
 	user, err := rb.SearchUser(filterAnd(filter("uid", username)))
 	if user.UID == "" || err == nil {
-		return errors.New("User not found")
+		return errUser404
 	} else if user.YearsPaid == 1 {
 		return nil
 	}
@@ -53,7 +53,7 @@ func Renew(ctx *cli.Context) error {
 		return err
 	}
 	user.UpdatedBy = updatedBy
-	newHome := "/home/" + user.UserType + "/" + string([]rune(user.UID)[0]) + "/" + user.UID
+	newHome := fmt.Sprintf("/home/%s/%s/%s", user.UserType, []rune(user.UID)[0], user.UID)
 	if ctx.GlobalBool("dry-run") {
 		user.HomeDirectory = newHome
 		return user.PrettyPrint()

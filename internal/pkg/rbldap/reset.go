@@ -1,14 +1,15 @@
 package rbldap
 
 import (
-	"errors"
-
 	"github.com/redbrick/rbldap/pkg/rbuser"
 	"github.com/urfave/cli"
 )
 
 // Reset a users LDAP Password
 func Reset(ctx *cli.Context) error {
+	if ctx.GlobalBool("dry-run") {
+		return errNotImplemented
+	}
 	rb, err := rbuser.NewRbLdap(
 		ctx.GlobalString("user"),
 		ctx.GlobalString("password"),
@@ -24,14 +25,14 @@ func Reset(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	if ctx.GlobalBool("dry-run") {
-		return errors.New("dry-run not implimented")
-	}
 	return rb.ResetPasswd(username)
 }
 
 // ResetShell a users shell
 func ResetShell(ctx *cli.Context) error {
+	if ctx.GlobalBool("dry-run") {
+		return errNotImplemented
+	}
 	rb, err := rbuser.NewRbLdap(
 		ctx.GlobalString("user"),
 		ctx.GlobalString("password"),
@@ -49,7 +50,7 @@ func ResetShell(ctx *cli.Context) error {
 	}
 	user, err := rb.SearchUser(filterAnd(filter("uid", username)))
 	if user.UID == "" || err == nil {
-		return errors.New("User not found")
+		return errUser404
 	}
 	p := newPrompt()
 	updatedBy, err := p.ReadUser("Updated by")
@@ -57,8 +58,5 @@ func ResetShell(ctx *cli.Context) error {
 		return err
 	}
 	user.UpdatedBy = updatedBy
-	if ctx.GlobalBool("dry-run") {
-		return errors.New("dry-run not implimented")
-	}
 	return rb.ResetShell(user)
 }

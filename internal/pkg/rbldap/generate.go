@@ -35,7 +35,10 @@ func Generate(ctx *cli.Context) error {
 		return err
 	}
 	defer file.Close()
-	n, err := file.WriteString("# WARNING, This File is auto Generated do NOT edit.\n# Please go read the docs. https://docs.redbrick.dcu.ie/web/apache\n" + strings.Join(vhosts, "\n"))
+	n, err := file.WriteString(fmt.Sprintf(
+		"# WARNING, This File is auto Generated do NOT edit.\n# Please go read the docs. https://docs.redbrick.dcu.ie/web/apache\n%s",
+		strings.Join(vhosts, "\n"),
+	))
 	if err != nil {
 		return err
 	}
