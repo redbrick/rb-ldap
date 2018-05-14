@@ -10,6 +10,17 @@ func (user *RbUser) CreateHome() error {
 	if err := os.MkdirAll(user.HomeDirectory, os.ModePerm); err != nil {
 		return err
 	}
+	file, err := os.Create(fmt.Sprintf("%s/.forward", user.HomeDirectory))
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	if _, err := file.WriteString(fmt.Sprintf("%s\n", user.Altmail)); err != nil {
+		return err
+	}
+	if err := file.Sync(); err != nil {
+		return err
+	}
 	return os.Chown(user.HomeDirectory, user.UIDNumber, user.GidNumber)
 }
 
