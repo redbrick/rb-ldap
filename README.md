@@ -10,7 +10,7 @@ Script to interact with Redbrick LDAP.
 * Renew a user
 * convert a users usertype
 * edit user info
-* reset a user's password
+* reset a user's password and shell
 * disable and renable a user account
 * remove and lock unpaid accounts
 * produce ldap stats
@@ -38,19 +38,28 @@ USAGE:
    rb-ldap [global options] command [command options] [arguments...]
 
 VERSION:
-   0.2.0
+   0.6.0
 
 AUTHOR:
    Cian Butler <butlerx@redbrick.dcu.ie>
 
 COMMANDS:
-     add, a           Add user to ldap
-     generate, g      generate list for uservhost macro
-     renew, r         renew a LDAP user
-     reset            reset a users password
-     search, s        Search ldap for user
-     update, u, edit  Update a user in ldap
-     help, h          Shows a list of commands or help for one command
+     add, a            Add user to ldap
+     disable, disuser  Disable a Users ldap account
+     generate, g       generate list for uservhost macro
+     renable, reuser   Renable a Users ldap account
+     renew, r          renew a LDAP user
+     reset             reset a users password
+     reset-shell       reset a users shell
+     search, s         Search ldap for user
+     update, u, edit   Update a user in ldap
+     help, h           Shows a list of commands or help for one command
+
+   Batch Commands:
+     alert-unpaid    Alert all unpaid users that their accounts will be disabled
+     delete-unpaid   Delete all unpaid users accounts that are outside their grace period
+     disable-unpaid  Diable all unpaid users accounts
+     new-year        Decriment Years Paid of all users to 1
 
 GLOBAL OPTIONS:
    --user value, -u value  ldap user, used for authentication (default: "cn=root,ou=ldap,o=redbrick")
