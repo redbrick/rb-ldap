@@ -17,14 +17,16 @@ func main() {
 			Email: "butlerx@redbrick.dcu.ie",
 		},
 	}
-	app.Version = "0.2.0"
+	app.Version = "0.3.0"
 	app.EnableBashCompletion = true
 
 	app.Flags = globalFlags
 	app.Commands = []cli.Command{
 		add,
+		disable,
 		generate,
 		renew,
+		renable,
 		reset,
 		newYear,
 		search,
