@@ -1,14 +1,12 @@
 package rbldap
 
 import (
-	"errors"
-
 	"github.com/redbrick/rbldap/pkg/rbuser"
 	"github.com/urfave/cli"
 )
 
-// Reset a users LDAP Password
-func Reset(ctx *cli.Context) error {
+// NewYear run new year migration on ldap
+func NewYear(ctx *cli.Context) error {
 	rb, err := rbuser.NewRbLdap(
 		ctx.GlobalString("user"),
 		ctx.GlobalString("password"),
@@ -20,12 +18,10 @@ func Reset(ctx *cli.Context) error {
 		return err
 	}
 	defer rb.Conn.Close()
-	username, err := getUsername(ctx.Args())
+	p := newPrompt()
+	username, err := p.ReadUser("Created by")
 	if err != nil {
 		return err
 	}
-	if ctx.GlobalBool("dry-run") {
-		return errors.New("dry-run not implimented")
-	}
-	return rb.ResetPasswd(username)
+	return rb.NewYear(username)
 }
