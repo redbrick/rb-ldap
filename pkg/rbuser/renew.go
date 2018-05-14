@@ -16,6 +16,9 @@ func (rb *RbLdap) Renew(user RbUser) error {
 	modification.Replace("year", []string{string(user.Year)})
 	modification.Replace("updated", []string{now.Format(timeLayout)})
 	modification.Replace("updatedBy", []string{user.UpdatedBy})
+	if user.LoginShell == expiredShell || user.LoginShell == noLoginShell {
+		modification.Replace("updatedBy", []string{defaultShell})
+	}
 	currentUser, err := rb.SearchUser(fmt.Sprintf("(&(uid=%s))", user.UID))
 	if err != nil {
 		return err

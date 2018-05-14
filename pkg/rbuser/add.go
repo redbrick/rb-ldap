@@ -36,7 +36,7 @@ func (rb *RbLdap) Add(user RbUser, mailUser bool) error {
 	addition.Attribute("created", []string{now.Format(timeLayout)})
 	addition.Attribute("createdBy", []string{user.CreatedBy})
 	addition.Attribute("gecos", []string{user.CN})
-	addition.Attribute("loginShell", []string{"/usr/local/shells/zsh"})
+	addition.Attribute("loginShell", []string{defaultShell})
 	addition.Attribute("homeDirectory", []string{user.HomeDirectory})
 	addition.Attribute("userPassword", []string{user.UserPassword})
 	addition.Attribute("host", user.Host)

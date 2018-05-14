@@ -11,6 +11,9 @@ Script to interact with Redbrick LDAP.
 * convert a users usertype
 * edit user info
 * reset a user's password
+* disable and renable a user account
+* remove and lock unpaid accounts
+* produce ldap stats
 
 ## Installation
 
