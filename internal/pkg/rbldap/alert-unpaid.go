@@ -5,8 +5,8 @@ import (
 	"github.com/urfave/cli"
 )
 
-// NewYear run new year migration on ldap
-func NewYear(ctx *cli.Context) error {
+// AlertUnPaid emails all unpaid users warning about account diable
+func AlertUnPaid(ctx *cli.Context) error {
 	rb, err := rbuser.NewRbLdap(
 		ctx.GlobalString("user"),
 		ctx.GlobalString("password"),
@@ -18,10 +18,5 @@ func NewYear(ctx *cli.Context) error {
 		return err
 	}
 	defer rb.Conn.Close()
-	p := newPrompt()
-	username, err := p.ReadUser("Updated By")
-	if err != nil {
-		return err
-	}
-	return rb.NewYear(username)
+	return rb.AlertUnPaid()
 }
