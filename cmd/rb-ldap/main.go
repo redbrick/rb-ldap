@@ -27,6 +27,7 @@ func main() {
 		deleteUnpaid,
 		disable,
 		disableUnpaid,
+		freeUser,
 		generate,
 		newYear,
 		renable,

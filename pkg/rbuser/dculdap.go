@@ -35,9 +35,9 @@ func (dcu *DcuLdap) Search(filter string) (RbUser, error) {
 	for _, entry := range sr.Entries {
 		dcuID, _ := strconv.Atoi(entry.GetAttributeValue("employeeNumber"))
 		course, year := splitCourseYear(entry.GetAttributeValue("physicalDeliveryOfficeName"))
-		userType, err := getUserType(entry.GetAttributeValue("distinguishedName"))
-		if err != nil {
-			return RbUser{}, err
+		userType, userTypeErr := getUserType(entry.GetAttributeValue("distinguishedName"))
+		if userTypeErr != nil {
+			return RbUser{}, userTypeErr
 		}
 		return RbUser{
 			CN:       entry.GetAttributeValue("displayName"),

@@ -39,7 +39,7 @@ helpdesk-request@redbrick.dcu.ie
 Have fun!
 
 - Redbrick Admin Team`
-	t := template.Must(template.New("user").Parse(email))
+	t := template.Must(template.New("user-update").Parse(email))
 	m := gomail.NewMessage()
 	m.SetHeader("From", "admin-request@redbrick.dcu.ie")
 	m.SetHeader("To", user.Altmail)

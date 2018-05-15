@@ -1,9 +1,5 @@
 package rbuser
 
-const expiredShell = "/usr/local/shells/expired"
-const noLoginShell = "/usr/local/shells/disusered"
-const defaultShell = "/usr/local/shells/shell"
-
 // DisableUser disable an account from ldap
 func (rb *RbLdap) DisableUser(user RbUser) error {
 	user.LoginShell = noLoginShell

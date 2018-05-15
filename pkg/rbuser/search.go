@@ -7,8 +7,6 @@ import (
 	ldap "gopkg.in/ldap.v2"
 )
 
-const timeLayout = "2006-01-02 15:04:05"
-
 // SearchUser ldap for a given filter and return first user that matches
 func (rb *RbLdap) SearchUser(filter string) (RbUser, error) {
 	users, err := rb.SearchUsers(filter)
