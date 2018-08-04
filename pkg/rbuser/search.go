@@ -10,6 +10,9 @@ import (
 // SearchUser ldap for a given filter and return first user that matches
 func (rb *RbLdap) SearchUser(filter string) (RbUser, error) {
 	users, err := rb.SearchUsers(filter)
+	if len(users) == 0 {
+		return RbUser{}, err
+	}
 	return users[0], err
 }
 

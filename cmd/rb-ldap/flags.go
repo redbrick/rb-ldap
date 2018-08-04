@@ -52,9 +52,9 @@ var globalFlags = []cli.Flag{
 	},
 
 	cli.StringFlag{
-		FilePath: "mailhost.redbrick.dcu.ie",
-		Name:     "smtp",
-		Usage:    "smtp server to send email with",
+		Value: "mailhost.redbrick.dcu.ie",
+		Name:  "smtp",
+		Usage: "smtp server to send email with",
 	},
 
 	cli.BoolFlag{

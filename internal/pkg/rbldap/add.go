@@ -1,6 +1,8 @@
 package rbldap
 
 import (
+	"strconv"
+
 	"github.com/redbrick/rbldap/pkg/rbuser"
 	"github.com/urfave/cli"
 )
@@ -42,7 +44,7 @@ func Add(ctx *cli.Context) error {
 		return err
 	}
 	defer dcu.Conn.Close()
-	newUser, err := dcu.Search(filterAnd(filter("employeenumber", string(id))))
+	newUser, err := dcu.Search(filterAnd(filter("employeenumber", strconv.Itoa(id))))
 	if err != nil {
 		return err
 	}

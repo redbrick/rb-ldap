@@ -16,8 +16,14 @@ type DcuLdap struct {
 
 // NewDcuLdap create ldap connection to DCU AD
 func NewDcuLdap(user, password, host string, port int) (*DcuLdap, error) {
-	conf := &ldapConf{user: user, password: password, host: host, port: port}
-	dcu := DcuLdap{conf}
+	dcu := DcuLdap{
+		&ldapConf{
+			user:     user,
+			password: password,
+			host:     host,
+			port:     port,
+		},
+	}
 	return &dcu, dcu.connect()
 }
 

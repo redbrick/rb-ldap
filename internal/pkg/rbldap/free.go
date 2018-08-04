@@ -25,7 +25,7 @@ func FreeUser(ctx *cli.Context) error {
 		return err
 	}
 	user, err := rb.SearchUser(filterAnd(filter("uid", username)))
-	if user.UID == "" || err == nil {
+	if user.UID == "" || err != nil {
 		fmt.Printf("%s is free\n", username)
 		return nil
 	}
