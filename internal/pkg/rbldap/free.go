@@ -3,7 +3,7 @@ package rbldap
 import (
 	"fmt"
 
-	"github.com/redbrick/rbldap/pkg/rbuser"
+	"github.com/redbrick/rb-ldap/pkg/rbuser"
 	"github.com/urfave/cli"
 )
 

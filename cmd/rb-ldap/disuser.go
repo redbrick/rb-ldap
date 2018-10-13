@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/redbrick/rbldap/internal/pkg/rbldap"
+	"github.com/redbrick/rb-ldap/internal/pkg/rbldap"
 	"github.com/urfave/cli"
 )
 
