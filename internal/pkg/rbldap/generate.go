@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/redbrick/rbldap/pkg/rbuser"
+	"github.com/redbrick/rb-ldap/pkg/rbuser"
 	"github.com/urfave/cli"
 )
 
