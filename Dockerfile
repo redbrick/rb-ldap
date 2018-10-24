@@ -8,7 +8,6 @@ ENV GO_PATH="/go"
 ADD . /src
 WORKDIR /src
 
-
 ENV CGO_ENABLED=0
 ENV GOOS=linux
 RUN go build -o bin/rb-ldap -a -installsuffix cgo -ldflags "-s -X main.version=$VERSION" github.com/redbrick/rb-ldap/cmd/rb-ldap
