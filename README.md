@@ -28,10 +28,10 @@ There is a `docker-compose.yml` for rb-ldap. Before running this file, you shoul
 The docker-compose file can be run using:
 
 ```console
-docker-compose run --rm rb-ldap -h
+docker-compose run --rm rb-ldap
 ```
 
-If you want do to it this way we really advise you create some form of an alias, it's much easier. A function such as the following can be placed in your `~/.bashrc`:
+If you want to use it this way, we really recommend you create an alias to a function, it's much easier. A function such as the following can be placed in your `~/.bashrc`:
 
 ```bash
 rb_ldap() {
@@ -43,7 +43,7 @@ rb_ldap() {
 alias rb-ldap=rb_ldap
 ```
 
-After that running `source ~/.bashrc` should be sufficient.
+After that running `source ~/.bashrc` should be sufficient to use rb-ldap in this way.
 
 ## Run
 
