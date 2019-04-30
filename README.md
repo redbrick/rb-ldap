@@ -21,7 +21,33 @@ Script to interact with Redbrick LDAP.
 go get github.com/redbrick/rbldap/cmd/rb-ldap
 ```
 
+#### Installation with Docker
+
+There is a `docker-compose.yml` for rb-ldap. Before running this file, you should make sure to change the paths to the ldap secrets, you can do this in the `docker-compose.yml` itself, under volumes.
+
+The docker-compose file can be run using:
+
+```console
+docker-compose run --rm rb-ldap -h
+```
+
+If you want do to it this way we really advise you create some form of an alias, it's much easier. A function such as the following can be placed in your `~/.bashrc`:
+
+```bash
+rb_ldap() {
+        pushd "/path/to/your/docker-compose/file/"
+        /path/to/docker-compose/ docker-compose run --rm rb-ldap "${@:1}"
+        popd
+}
+
+alias rb-ldap=rb_ldap
+```
+
+After that running `source ~/.bashrc` should be sufficient.
+
 ## Run
+
+In any case of installation, rb-ldap can be run by invoking:
 
 ```console
 rb-ldap
@@ -59,7 +85,7 @@ COMMANDS:
      alert-unpaid    Alert all unpaid users that their accounts will be disabled
      delete-unpaid   Delete all unpaid users accounts that are outside their grace period
      disable-unpaid  Diable all unpaid users accounts
-     new-year        Decriment Years Paid of all users to 1
+     new-year        Decrement Years Paid of all users to 1
 
 GLOBAL OPTIONS:
    --user value, -u value  ldap user, used for authentication (default: "cn=root,ou=ldap,o=redbrick")
