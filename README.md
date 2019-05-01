@@ -31,16 +31,12 @@ The docker-compose file can be run using:
 docker-compose run --rm rb-ldap
 ```
 
-If you want to use it this way, we really recommend you create an alias to a function, it's much easier. A function such as the following can be placed in your `~/.bashrc`:
+If you want to use it this way, we really recommend you create a function, it's much easier. A function such as the following can be placed in your `~/.bashrc`:
 
 ```bash
 rb_ldap() {
-        pushd "/path/to/your/docker-compose/file/"
-        /path/to/docker-compose/ docker-compose run --rm rb-ldap "${@:1}"
-        popd
+    /path/to/docker-compose -f /path/to/your/docker-compose/file/docker-compose.yml run --rm rb-ldap "${@:1}"
 }
-
-alias rb-ldap=rb_ldap
 ```
 
 After that running `source ~/.bashrc` should be sufficient to use rb-ldap in this way.
