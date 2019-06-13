@@ -1,0 +1,8 @@
+version: '3'
+services:
+  rb-ldap:
+    build:
+      context: .
+    volumes:
+      - "/path/to/file:/etc/dcu_ldap.secret:ro"
+      - "/path/to/file:/etc/ldap.secret:ro"

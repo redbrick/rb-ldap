@@ -20,7 +20,7 @@ var search = cli.Command{
 			Value: "*",
 		},
 		cli.StringFlag{
-			Name:  "id",
+			Name:  "id, i",
 			Usage: "DCU id Number",
 			Value: "*",
 		},
